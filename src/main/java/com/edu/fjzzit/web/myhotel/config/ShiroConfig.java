@@ -48,10 +48,7 @@ public class ShiroConfig {
         filterMap.put("/admin/login","anon");//设置登录模块忽视验证
         filterMap.put("/admin/login/images/**","anon");//设置登录模块忽视验证
         filterMap.put("/static/**", "anon");
-//        filterMap.put("*.js", "anon");
-//        filterMap.put("*.css", "anon");
-//        filterMap.put("*.png", "anon");
-        //filterMap.put("/**","authc");//所有除了登录模块的其他模块需要验证
+        filterMap.put("/**","authc");//所有除了登录模块的其他模块需要验证
 
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterMap);
 

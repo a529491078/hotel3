@@ -1,0 +1,285 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>长期请假申请</title>
+    <meta name="description" content="请假管理系统">
+    <meta name="keywords" content="index">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="icon" type="image/png" href="/public/assets/i/favicon.png">
+    <link rel="apple-touch-icon-precomposed" href="/public/assets/i/app-icon72x72@2x.png">
+    <meta name="apple-mobile-web-app-title" content="Amaze UI" />
+    <link rel="stylesheet" href="../js/amazeui.min.css" />
+    <link rel="stylesheet" href="../js/admin.css">
+    <link rel="stylesheet" href="../js/app.css">
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!-- 可选的 Bootstrap 主题文件（一般不用引入） -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+</head>
+
+<body data-type="generalComponents">
+<div class="hrms_container">
+    <!-- 导航条 -->
+    <div class="hrms_brand_nav">
+        <nav class="navbar navbar-inverse navbar-static-top">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#hrms-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">XXX公司LOGO</a>
+                </div>
+
+                <div class="collapse navbar-collapse" id="hrms-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li><a href="hrms_main">公司介绍 </a></li>
+                        <li><a href="hrms_employee">人力资源部</a></li>
+                        <li><a href="hrms_apply">请假申请</a></li>
+                        <li><a href="#">报销申请</a></li>
+                        <li><a href="#">出勤记录</a></li>
+                    </ul>
+
+                    <form class="navbar-form navbar-left">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="站内搜索">
+                        </div>
+                        <button type="submit" class="btn btn-default">搜索</button>
+                    </form>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="账号管理_+${session.user}"><span class="caret"></span></a>
+                            <ul class="dropdown-menu nav nav-pills nav-stacked">
+                                <li class="active"><a th:href="@{/hrms_userUpdate}"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> 修改信息</a></li>
+                                <li><a th:href="@{/hrms_userUpdatePhone}"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> 头像更换</a></li>
+                                <li class="hrms_logout"><a href="logout"><span class="glyphicon glyphicon-off" aria-hidden="true"></span> 账号退出</a></li>
+                            </ul>
+                        </li>
+                    </ul><!-- /.nav navbar-nav navbar-right -->
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>
+        <div class="hrms_body" style="position:relative; top:-15px;">
+
+            <!-- 左侧栏 -->
+            <div class="panel-group col-sm-2" id="hrms_sidebar_left" role="tablist" aria-multiselectable="true">
+                <ul class="nav nav-pills nav-stacked emp_sidebar">
+                    <li role="presentation" class="active">
+                        <a href="#" data-toggle="collapse" data-target="#collapse_emp">
+                            <span class="glyphicon glyphicon-user" aria-hidden="true">请假申请</span>
+                        </a>
+                        <ul class="nav nav-pills nav-stacked" id="collapse_emp">
+                            <li role="presentation"><a href="hrms_apply">请假申请</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <ul class="nav nav-pills nav-stacked dept_sidebar">
+                    <li role="presentation" class="active">
+                        <a href="#"  data-toggle="collapse" data-target="#collapse_dept">
+                            <span class="glyphicon glyphicon-cloud" aria-hidden="true">请假审核</span>
+                        </a>
+                        <ul class="nav nav-pills nav-stacked" id="collapse_dept">
+                            <li role="presentation"><a href="hrms_applyIndex">请假审核</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div><!-- /.panel-group，#hrms_sidebar_left -->
+            <div class="tpl-content-wrapper">
+                <div class="tpl-portlet-components">
+                    <div class="portlet-title">
+                        <div class="caption font-green bold">
+                            <span class="am-icon-code"></span> 假条申请
+                        </div>
+                        <div class="tpl-portlet-input tpl-fz-ml">
+                            <div class="portlet-input input-small input-inline">
+                                <div class="input-icon right">
+                                    <!--<i class="am-icon-search"></i>-->
+                                    <input type="hidden" class="form-control form-control-solid" placeholder="搜索..."> </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="tpl-block ">
+
+                        <div class="am-g tpl-amazeui-form">
+
+
+                            <div class="am-u-sm-12 am-u-md-9">
+                                <form class="am-form am-form-horizontal add_leave_form" onsubmit="return false">
+                                    <div class="am-form-group">
+                                        <label for="l_s_card" class="am-u-sm-3 am-form-label">工号</label>
+                                        <div class="am-u-sm-9">
+                                            <input type="text" name="leave_id" id="l_s_card" value="" placeholder="请输入工号">
+                                            <button class="am-btn  am-btn-default am-btn-success tpl-am-btn-success am-icon-search" type="button" onclick="get_Student()"></button>
+                                            <small>输入工号点击查询，姓名信息会自动填写。</small>
+                                        </div>
+
+                                    </div>
+                                    <div class="am-form-group">
+                                        <label for="l_s_username" class="am-u-sm-3 am-form-label">姓名</label>
+                                        <div class="am-u-sm-9">
+                                            <input type="text" name="leave_name" value="" id="l_s_username" disabled="true">
+                                            <input type="text" name="leave_name" value="" id="l_s_username1" style="display:none">
+                                            <small></small>
+                                        </div>
+                                    </div>
+                                    <div class="am-form-group">
+                                        <label for="l_s_grade" class="am-u-sm-3 am-form-label">部门</label>
+                                        <div class="am-u-sm-9">
+                                            <input type="text" id="l_s_dept_name" disabled="true">
+                                        </div>
+                                    </div>
+                                    <!--<div class="am-form-group">-->
+                                    <!--<label for="user-email" class="am-u-sm-3 am-form-label">电子邮件 / Email</label>-->
+                                    <!--<div class="am-u-sm-9">-->
+                                    <!--<input type="email" id="user-email" placeholder="输入你的 / Email">-->
+                                    <!--<small></small>-->
+                                    <!--</div>-->
+                                    <!--</div>-->
+
+
+                                    <div class="am-form-group">
+                                        <label for="l_s_phone" class="am-u-sm-3 am-form-label">手机号</label>
+                                        <div class="am-u-sm-9">
+                                            <input type="tel" name="leave_phone" id="add_phone" value="" placeholder="输入手机号">
+                                            <span></span>
+                                        </div>
+                                    </div>
+                                    <div class="am-form-group">
+                                        <label for="l_begintime" class="am-u-sm-3 am-form-label">开始时间 <span class="tpl-form-line-small-title"></span></label>
+                                        <div class="am-u-sm-9">
+                                            <input type="date" name="leave_start" id="l_begintime" value="" class="am-form-field tpl-form-no-bg" placeholder="开始时间" data-am-datepicker="" />
+                                            <span></span>
+                                            <small></small>
+                                        </div>
+                                    </div>
+                                    <div class="am-form-group">
+                                        <label for="l_endtime" class="am-u-sm-3 am-form-label">结束时间 <span class="tpl-form-line-small-title"></span></label>
+                                        <div class="am-u-sm-9">
+                                            <input type="date" name="leave_end" id="l_endtime"  value="" class="am-form-field tpl-form-no-bg" placeholder="结束时间" data-am-datepicker="" />
+                                            <span></span>
+                                            <small></small>
+                                        </div>
+                                    </div>
+
+                                    <div class="am-form-group">
+                                        <label for="l_address" class="am-u-sm-3 am-form-label">前往地点</label>
+                                        <div class="am-u-sm-9">
+                                            <input type="text" name="leave_place" id="l_address" value="" placeholder="输入请假去往地点">
+                                        </div>
+                                    </div>
+
+                                    <div class="am-form-group">
+                                        <label for="l_cause" class="am-u-sm-3 am-form-label">请假原因</label>
+                                        <div class="am-u-sm-9">
+                                            <textarea class="" name="leave_reason" rows="5" id="l_cause"   placeholder="输入请假原因"></textarea>
+                                            <small></small>
+                                        </div>
+                                    </div>
+                                    <div class="am-form-group">
+                                        <label for="l_charge" class="am-u-sm-3 am-form-label">请假负责人</label>
+                                        <div class="am-u-sm-9">
+                                            <input type="text" style="display:none" name="leave_dept" id="l_s_leave_dept"/>
+                                            <input type="text" name="" id="l_s_dept_leader" disabled="true">
+                                        </div>
+                                    </div>
+                                    <div class="am-form-group">
+                                        <div class="am-u-sm-9 am-u-sm-push-3">
+                                            <button type="button" class="am-btn am-btn-primary leave_save_btn">提交假条</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div><!-- /.hrms_brand_nav -->
+<script src="../js/jquery-3.3.1.min.js"></script>
+<script src="../js/app.js"></script>
+<script>
+    var addPhone=false;
+    var addStart=false;
+    var  addEnd=false;
+    //手机号框失去焦点时
+    $("#add_phone").blur(function(){
+        if(!$(this).val().match(/^1([38][0-9]|4[579]|5[0-3,5-9]|6[6]|7[0135678]|9[89])\d{8}$/)){
+            $(this).next().css("color","red").html("X");
+            addPhone=false;
+        }else{
+            $(this).next().css("color","green").html("√");
+            addPhone=true;
+        }
+    });
+    //开始时间框失去焦点时
+    $("#l_begintime").blur(function(){
+        var start=$("#l_begintime").val();
+        if(start==""){
+            $(this).next().css("color","red").html("X");
+            addStart=false;
+        }else {
+            $(this).next().css("color","green").html("√");
+            addStart=true;
+        }
+    });
+    //结束时间框失去焦点时
+    $("#l_endtime").blur(function(){
+        var end=$("#l_endtime").val();
+        if(end==""){
+            $(this).next().css("color","red").html("X");
+            addEnd=false;
+        }else {
+            $(this).next().css("color","green").html("√");
+            addEnd=true;
+        }
+    });
+
+    function get_Student(){
+        var l_s_card = document.getElementById('l_s_card').value;
+        $.get("emp_selById2?emp_id=" + l_s_card, function(data){
+            if (data == null){
+                alert("该学号输入有误，未在系统中找到!")
+            }else{
+                if(data.emp_name!=null){
+                    document.getElementById('l_s_username').value = data.emp_name;//给员工姓名文本框赋值并显示;
+                }
+                document.getElementById('l_s_username1').value = data.emp_name;//给隐藏员工姓名文本框赋值;
+                document.getElementById('l_s_dept_name').value=data.dept.dept_name;//给部门名称文本框赋值并显示;
+                document.getElementById('l_s_dept_leader').value=data.dept.dept_leader;//给负责人文本框赋值并显示;
+                document.getElementById('l_s_leave_dept').value=data.dept.dept_id;//给隐藏id文本框赋值;
+            }
+        });
+    }
+    //单击保存
+    $(".leave_save_btn").click(function(){
+        if(addPhone==true&&addStart==true&&addEnd==true){
+            $.post("leave_Add",$(".add_leave_form").serialize(),function(result){
+                if(result.code==100){
+                    alert('请假申请成功，请等待审核！');
+                }else{
+                    alert('请假申请失败！请重新申请！');
+                    window.location.reload();
+                }
+            });
+        }else{
+            alert("请添加完整信息");
+            return false;
+        }
+    });
+
+</script>
+</div>
+</body>
+
+</html>

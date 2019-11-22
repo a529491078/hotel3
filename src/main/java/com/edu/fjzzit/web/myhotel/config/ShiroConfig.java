@@ -45,7 +45,7 @@ public class ShiroConfig {
         filterMap.put("/swagger-resources/**", "anon");
 
         filterMap.put("/user/login","anon");//设置登录模块忽视验证
-        filterMap.put("/admin/hello","anon");//设置登录模块忽视验证
+        filterMap.put("/admin/login","anon");//设置登录模块忽视验证
         filterMap.put("/admin/login/images/**","anon");//设置登录模块忽视验证
         filterMap.put("/static/**", "anon");
 //        filterMap.put("*.js", "anon");

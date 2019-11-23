@@ -62,6 +62,13 @@
     from room_info
     where room_num=#{roomNum,jdbcType=VARCHAR}
   </select>
+
+  <select id="queryRoomNumByRoomNumAndBuildingNum" parameterType="java.lang.String" resultType="java.lang.Integer">
+    select count(*)
+    from room_info
+    where room_num=#{roomNum,jdbcType=VARCHAR} and building_num=#{buildingNum,jdbcType=VARCHAR}
+  </select>
+
   <update id="updateRoomStateByRoomNum">
     update room_info
     set room_state=#{roomState,jdbcType=INTEGER}
@@ -186,7 +193,13 @@
 
   <!-- 查询所有记录数-->
   <select id="selCount" resultType="java.lang.Long">
-     select count(*) from room_info
+    select count(*) from room_info
+  </select>
+
+  <!-- 查询所有记录数-->
+  <select id="selRoomTypeAndRoomPriceCount" resultType="java.lang.Long">
+    select count(*) from room_type t
+    LEFT JOIN room_price p on t.room_type_num = p.room_type_num
   </select>
 
   <!-- 查询客房套餐名和客房类型ID-->

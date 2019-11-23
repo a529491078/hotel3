@@ -6,79 +6,66 @@ import com.edu.fjzzit.web.myhotel.dto.RoomTypeAndRoomPriceDTO;
 import com.edu.fjzzit.web.myhotel.model.Page;
 import com.edu.fjzzit.web.myhotel.model.RoomInfo;
 import com.edu.fjzzit.web.myhotel.service.RoomManagementService;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/room_management")
-@Api(tags = "客房管理")
+@Controller
+@RequestMapping("/admin")
 public class RoomManagementController {
     @Autowired
     private RoomManagementService roomManagementService;
 
-    @PostMapping("/get_room_info_page")
-    @ApiOperation("查询所有客房信息")
-    @RequiresRoles(value={"admin"})
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "token",value = "鉴权Token",dataType = "string",required = true,paramType = "header"),
-    })
-    public ResultJson fingRoomInfoAllByPage(@RequestParam(defaultValue="1")Integer pageNum, @RequestParam(defaultValue="5")Integer pageSize){
+    @RequestMapping("/get_room_info_page")
+    public ModelAndView fingRoomInfoAllByPage(@RequestParam(defaultValue="1")Integer pageNumber, @RequestParam(defaultValue="5")Integer pageSize){
         try{
-            Page page = roomManagementService.findRoomInfoAll(pageNum, pageSize);
-            return new ResultJson("200","查询成功!",page);
+            Page page = roomManagementService.findRoomInfoAll(pageNumber, pageSize);
+            ModelAndView modelAndView=new ModelAndView();
+            modelAndView.addObject("page",page);
+            modelAndView.setViewName("/view/admin/room_management_page");
+            return modelAndView;
         }catch(Exception e){
-            e.printStackTrace();
-            return new ResultJson("400","查询失败!",null);
+            return null;
         }
     }
 
-    @PostMapping("/get_room_type_price_page")
-    @ApiOperation("查询所有客房套餐信息")
-    @RequiresRoles(value={"admin"})
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "token",value = "鉴权Token",dataType = "string",required = true,paramType = "header"),
-    })
-    public ResultJson findRoomTypeAndRoomPriceAll(@RequestParam(defaultValue="1")Integer pageNum, @RequestParam(defaultValue="5")Integer pageSize){
+    @RequestMapping("/get_room_type_price_page")
+    public ModelAndView findRoomTypeAndRoomPriceAll(@RequestParam(defaultValue="1")Integer pageNumber, @RequestParam(defaultValue="5")Integer pageSize){
         try{
-            Page page = roomManagementService.findRoomTypeAndRoomPriceAll(pageNum,pageSize);
-            return new ResultJson("200","查询成功!",page);
+            Page page = roomManagementService.findRoomTypeAndRoomPriceAll(pageNumber,pageSize);
+            ModelAndView modelAndView=new ModelAndView();
+            modelAndView.addObject("page",page);
+            modelAndView.setViewName("/view/admin/room_type_price_management_page");
+            return modelAndView;
         }catch(Exception e){
-            return new ResultJson("400","查询失败!",null);
+            return null;
         }
     }
 
-    @PostMapping("/get_roomPriceName_roomTypeNum")
-    @ApiOperation("查询所有客房类型名称和客房类型ID")
-    @RequiresRoles(value={"admin"})
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "token",value = "鉴权Token",dataType = "string",required = true,paramType = "header"),
-    })
-    public ResultJson findRoomPriceNameAll(){
+    @RequestMapping("/get_roomPriceName_roomTypeNum")
+    @ResponseBody
+    public List<RoomPriceNameAndRoomTypeNumDTO> findRoomPriceNameAll(){
+        List<RoomPriceNameAndRoomTypeNumDTO> roomPriceNameAll=null;
         try{
-            List<RoomPriceNameAndRoomTypeNumDTO> roomPriceNameAll = roomManagementService.findRoomPriceNameAll();
-            return new ResultJson("200","查询成功!",roomPriceNameAll);
+            roomPriceNameAll = roomManagementService.findRoomPriceNameAll();
+            return roomPriceNameAll;
         }catch(Exception e){
-            return new ResultJson("400","查询失败!",null);
+            return roomPriceNameAll;
         }
     }
 
-    @PostMapping("/ins_room_info")
-    @ApiOperation("添加客房信息")
-    @RequiresRoles(value={"admin"})
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "token",value = "鉴权Token",dataType = "string",required = true,paramType = "header"),
-    })
-    public ResultJson insRoomInfoById(@RequestBody RoomInfo roomInfo){
-        System.out.println(roomInfo);
+    @RequestMapping("/ins_room_info")
+    @ResponseBody
+    public ResultJson insRoomInfoById(RoomInfo roomInfo){
         try{
-            roomManagementService.insRoomInfoById(roomInfo);
+            roomManagementService.insRoomInfo(roomInfo);
             return new ResultJson("200","添加成功!",null);
         }catch(Exception e){
             e.printStackTrace();
@@ -103,20 +90,36 @@ public class RoomManagementController {
         }
     }
 
-    @PostMapping("/get_room_info_byid")
-    @ApiOperation("根据ID查询客房信息")
-    @RequiresRoles(value={"admin"})
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "token",value = "鉴权Token",dataType = "string",required = true,paramType = "header"),
-            @ApiImplicitParam(name = "roomId",value = "客房ID",dataType = "string",required = true),
-    })
-    public ResultJson findRoomInfoById(Integer roomId){
+    @RequestMapping("/get_room_info_byid")
+    @ResponseBody
+    public ResultJson findRoomInfoById(Integer roomNum){
         try{
-            RoomInfo roomInfoById = roomManagementService.findRoomInfoById(roomId);
-            return new ResultJson("200","查询成功!",roomInfoById);
+            RoomInfo roomInfoById = roomManagementService.findRoomInfoById(roomNum);
+            return new ResultJson("200", "查询成功!", roomInfoById);
         }catch(Exception e){
             e.printStackTrace();
             return new ResultJson("400","查询失败!",null);
+        }
+    }
+
+    /**
+     * 判断房间名是否重复
+     * @param roomNum
+     * @return
+     */
+    @RequestMapping("/get_not_room_id_byid")
+    @ResponseBody
+    public ResultJson findNotRoomIdById(String roomNum,String buildingNum){
+        try{
+            int notRoomIdById = roomManagementService.findNotRoomIdById(roomNum,buildingNum);
+            if (notRoomIdById==0) {
+                return new ResultJson("200", "查询成功!", null);
+            }else {
+                return new ResultJson("400","楼栋房间号已存在!",null);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+            return new ResultJson("400","楼栋房间号已存在!",null);
         }
     }
 
@@ -172,12 +175,7 @@ public class RoomManagementController {
     }
 
     @PostMapping("/del_room_info_byid")
-    @ApiOperation("根据ID删除客房信息")
-    @RequiresRoles(value={"admin"})
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "token",value = "鉴权Token",dataType = "string",required = true,paramType = "header"),
-            @ApiImplicitParam(name = "roomId",value = "客房ID",dataType = "string",required = true),
-    })
+    @ResponseBody
     public ResultJson delRoomInfoById(Integer roomId){
         try{
             roomManagementService.delRoomInfoById(roomId);
@@ -188,13 +186,8 @@ public class RoomManagementController {
         }
     }
 
-    @PostMapping("/del_room_type_price_byid")
-    @ApiOperation("根据ID删除客房套餐信息")
-    @RequiresRoles(value={"admin"})
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "token",value = "鉴权Token",dataType = "string",required = true,paramType = "header"),
-            @ApiImplicitParam(name = "roomTypeNum",value = "客房ID",dataType = "string",required = true),
-    })
+    @RequestMapping("/del_room_type_price_byid")
+    @ResponseBody
     public ResultJson delRoomTypeAndRoomPriceById(Long roomTypeNum){
         try{
             roomManagementService.delRoomTypeAndRoomPriceById(roomTypeNum);

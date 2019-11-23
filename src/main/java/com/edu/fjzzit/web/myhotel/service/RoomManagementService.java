@@ -30,7 +30,7 @@ public interface RoomManagementService {
      * @param roomInfo 客房信息
      * @return 受影响行数
      */
-    int insRoomInfoById(RoomInfo roomInfo);
+    int insRoomInfo(RoomInfo roomInfo);
 
     /**
      * 查询所有客房类型名称和客房类型ID
@@ -50,6 +50,13 @@ public interface RoomManagementService {
      * @return 客房信息
      */
     RoomInfo findRoomInfoById(Integer roomId);
+
+    /**
+     * 查看房间号是否存在
+     * @param roomId 主键
+     * @return 房间号
+     */
+    int findNotRoomIdById(String roomId,String buildingNum);
 
     /**
      * 修改客房信息

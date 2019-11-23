@@ -71,7 +71,7 @@ public class RoomManagementServiceImpl implements RoomManagementService {
         page.setPageNumber(pageNumber);
         List<RoomTypeAndRoomPriceDTO> roomTypeAndRoomPriceDTOs = roomInfoMapper.findRoomTypeAndRoomPriceAll(pageSize * (pageNumber - 1),pageSize);
         page.setList(roomTypeAndRoomPriceDTOs);
-        long total = roomInfoMapper.selCount();
+        long total = roomInfoMapper.selRoomTypeAndRoomPriceCount();
         page.setTotalNumber(total);
         page.setTotal(total%pageSize==0?total/pageSize:total/pageSize+1);
         return page;
@@ -79,7 +79,7 @@ public class RoomManagementServiceImpl implements RoomManagementService {
 
     @Override
     @Transactional
-    public int insRoomInfoById(RoomInfo roomInfo) {
+    public int insRoomInfo(RoomInfo roomInfo) {
         return roomInfoMapper.insert(roomInfo);
     }
 
@@ -97,6 +97,11 @@ public class RoomManagementServiceImpl implements RoomManagementService {
     @Override
     public RoomInfo findRoomInfoById(Integer roomId) {
         return roomInfoMapper.selectByPrimaryKey(roomId);
+    }
+
+    @Override
+    public int findNotRoomIdById(String roomId,String buildingNum) {
+        return roomInfoMapper.queryRoomNumByRoomNumAndBuildingNum(roomId,buildingNum);
     }
 
     @Override

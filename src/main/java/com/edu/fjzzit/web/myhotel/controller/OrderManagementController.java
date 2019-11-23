@@ -4,34 +4,31 @@ import com.edu.fjzzit.web.myhotel.config.ResultJson;
 import com.edu.fjzzit.web.myhotel.dto.RoomOrderDetailAndRoomOrderDTO;
 import com.edu.fjzzit.web.myhotel.model.Page;
 import com.edu.fjzzit.web.myhotel.service.OrderManagementService;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
-@RestController
-@RequestMapping("/order_management")
-@Api(tags = "订单管理")
+@Controller
+@RequestMapping("/admin")
 public class OrderManagementController  {
     @Autowired
     private OrderManagementService orderManagementService;
 
-    @PostMapping("/get_room_order_page")
-    @ApiOperation("查询所有订单信息(分页)")
-    @RequiresRoles(value={"admin"})
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "token",value = "鉴权Token",dataType = "string",required = true,paramType = "header"),
-    })
-    public ResultJson fingRoomInfoAllByPage(@RequestParam(defaultValue="1")Integer pageNum, @RequestParam(defaultValue="5")Integer pageSize){
+    @RequestMapping("/get_room_order_page")
+    public ModelAndView fingOrderInfoAllByPage(@RequestParam(defaultValue="1")Integer pageNumber, @RequestParam(defaultValue="5")Integer pageSize){
         try{
-            Page page = orderManagementService.findRoomOrderDetailAll(pageNum, pageSize);
-            return new ResultJson("200","查询成功!",page);
+            Page page = orderManagementService.findRoomOrderDetailAll(pageNumber, pageSize);
+            ModelAndView modelAndView=new ModelAndView();
+            modelAndView.addObject("page",page);
+            modelAndView.setViewName("/view/admin/order_management_page");
+            return modelAndView;
         }catch(Exception e){
-            e.printStackTrace();
-            return new ResultJson("400","查询失败!",null);
+            return null;
         }
     }
 
@@ -51,7 +48,6 @@ public class OrderManagementController  {
             return new ResultJson("400","查询失败!",null);
         }
     }
-
     @PostMapping("/upd_room_order_byid")
     @ApiOperation("根据主键修改订单信息")
     @RequiresRoles(value={"admin"})
@@ -67,13 +63,9 @@ public class OrderManagementController  {
             return new ResultJson("400","修改失败!",null);
         }
     }
-    @PostMapping("/del_room_order_byid")
-    @ApiOperation("根据主键删除订单信息")
-    @RequiresRoles(value={"admin"})
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "token",value = "鉴权Token",dataType = "string",required = true,paramType = "header"),
-            @ApiImplicitParam(name = "roomOrderDetailNum",value = "订单详情主键",dataType = "string",required = true),
-    })
+
+    @RequestMapping("/del_room_order_byid")
+    @ResponseBody
     public ResultJson delRoomOrderDetailById(Long roomOrderDetailNum) {
         try {
             orderManagementService.delRoomOrderDetailById(roomOrderDetailNum);

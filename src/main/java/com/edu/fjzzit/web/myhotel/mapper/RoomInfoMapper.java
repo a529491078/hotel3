@@ -36,22 +36,81 @@ public interface RoomInfoMapper {
      */
     int queryRoomNumIsExists(@Param("roomNum") String roomNum);
 
+    /**
+     * 判断楼栋所在房间号是否存在
+     * @param roomNum
+     * @param buildingNum
+     * @return
+     */
+    int queryRoomNumByRoomNumAndBuildingNum(@Param("roomNum") String roomNum,@Param("buildingNum") String buildingNum);
+
+    /**
+     * 分页查询客房信息
+     * @param pageStart
+     * @param pageSize
+     * @return
+     */
     List<RoomInfo> findRoomInfoAll(@Param("pageStart") int pageStart, @Param("pageSize")int pageSize);
 
+    /**
+     * 分页查询客房套餐信息
+     * @param pageStart
+     * @param pageSize
+     * @return
+     */
     List<RoomTypeAndRoomPriceDTO> findRoomTypeAndRoomPriceAll(@Param("pageStart") int pageStart, @Param("pageSize") int pageSize);
 
+    /**
+     * 根据主键查询客房类型表
+     * @param roomTypeNum
+     * @return
+     */
     RoomType findRoomTypeByRoomTypeNum(@Param("roomTypeNum") long roomTypeNum);
 
+    /**
+     * 根据roomTypeNum查询客房价格表
+     * @param roomTypeNum
+     * @return
+     */
     RoomPrice findRoomPriceByRoomTypeNum(@Param("roomTypeNum") long roomTypeNum);
 
+    /**
+     * 查询所有客房套餐名
+     * @return
+     */
     List<RoomPriceNameAndRoomTypeNumDTO> findRoomPriceNameAll();
 
+    /**
+     * 查询客房表条目数
+     * @return
+     */
     long selCount();
 
+    /**
+     * 查询客房套餐条目数
+     * @return
+     */
+    long selRoomTypeAndRoomPriceCount();
+
+    /**
+     * 删除客房套餐信息
+     * @param roomTypeNum
+     * @return
+     */
     int delRoomTypeAndRoomPriceById(Long roomTypeNum);
 
+    /**
+     * 根据主键查询客房套餐
+     * @param roomTypeNum
+     * @return
+     */
     RoomTypeAndRoomPriceDTO findRoomTypeAndRoomPriceById(@Param("roomTypeNum") Long roomTypeNum);
 
+    /**
+     * 修改客房套餐
+     * @param roomTypeAndRoomPriceDTO
+     * @return
+     */
     int updRoomTypeAndRoomPriceAll(RoomTypeAndRoomPriceDTO roomTypeAndRoomPriceDTO);
 
 

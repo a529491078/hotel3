@@ -79,18 +79,20 @@
 				addClass(document.querySelector(".sk-rotating-plane"), "active")
 				document.querySelector(".login").style.display = "none"
 				$.ajax({
-					url:'login',
-					data:{username:username,password:password},
+					url:'login_list',
+					data:{adminName:username,adminPassword:password},
 					type:'post',
 					dataType:'json',
-					success:function(data){
-						if(data.type == 'success'){
-							window.parent.location = 'index';
+					success:function(result){
+						if(result.datas != 'success'){
+							alert(result.msg);
+							window.location.replace('main');
+							//window.location.href( '/view/admin/index.jsp');
 						}else{
 							removeClass(document.querySelector(".login"), "active");
 							removeClass(document.querySelector(".sk-rotating-plane"), "active");
 							document.querySelector(".login").style.display = "block";
-							alert(data.msg);
+							alert(result.msg);
 							//changeCpacha();
 						}
 					}

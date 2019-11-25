@@ -37,6 +37,7 @@
     <id column="room_type_num" property="roomTypeNum" jdbcType="BIGINT" />
     <result column="room_type_name" property="roomTypeName" jdbcType="VARCHAR" />
     <result column="bed_type" property="bedType" jdbcType="VARCHAR" />
+    <result column="room_type_img" property="roomTypeImg" jdbcType="VARCHAR" />
     <result column="floor" property="floor" jdbcType="VARCHAR" />
     <result column="room_type_decs" property="roomTypeDecs" jdbcType="VARCHAR" />
     <result column="room_price_name" property="roomPriceName" jdbcType="VARCHAR" />
@@ -175,7 +176,7 @@
 
   <!-- 分页查询客房套餐 -->
   <select id="findRoomTypeAndRoomPriceAll" resultMap="RoomTypeAndRoomPriceDTOMap">
-     select t.room_type_num,room_type_name,bed_type,floor,room_type_decs,room_price_name,
+     select t.room_type_num,room_type_name,bed_type,room_type_img,floor,room_type_decs,room_price_name,
      breakfast_type,room_price
      from room_type t
      LEFT JOIN room_price p on t.room_type_num = p.room_type_num limit #{pageStart},#{pageSize}
@@ -184,6 +185,11 @@
   <!-- 根据room_type_num查询客房类型表-->
   <select id="findRoomTypeByRoomTypeNum" resultMap="RoomTypeMap">
      select * from room_type where room_type_num=#{roomTypeNum,jdbcType=BIGINT}
+  </select>
+
+  <!-- 根据room_type_name查询客房类型id -->
+  <select id="findRoomTypeNumByRoomTypeNanme" resultType="java.lang.Long">
+     select room_type_num from room_type where room_type_name=#{roomTypeName,jdbcType=VARCHAR}
   </select>
 
   <!-- 根据room_type_num查询客房价格表-->
@@ -209,7 +215,7 @@
 
   <!-- 根据ID查询客房套餐 -->
   <select id="findRoomTypeAndRoomPriceById" resultMap="RoomTypeAndRoomPriceDTOMap">
-    select t.room_type_num,room_type_name,bed_type,floor,room_type_decs,room_price_name,
+    select t.room_type_num,room_type_name,bed_type,room_type_img,floor,room_type_decs,room_price_name,
     breakfast_type,room_price
     from room_type t
     LEFT JOIN room_price p on t.room_type_num = p.room_type_num
@@ -237,6 +243,9 @@
   </if>
     <if test="bedType != null" >
       bed_type = #{bedType,jdbcType=VARCHAR},
+    </if>
+    <if test="roomTypeImg != null" >
+      room_type_img = #{roomTypeImg,jdbcType=VARCHAR},
     </if>
     <if test="floor != null" >
       floor = #{floor,jdbcType=VARCHAR},

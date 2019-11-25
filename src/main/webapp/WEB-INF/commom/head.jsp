@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
     <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
+    <script src="/static/admin/login/js/jquery-1.8.0.min.js"></script>
 </head>
 <body>
 <div class="hrms_brand_nav">
@@ -22,18 +23,17 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" id="company_logo" href="#">XXX公司LOGO</a>
+                <a class="navbar-brand" id="company_logo" href="#">XXX酒店LOGO</a>
             </div>
 
             <div class="collapse navbar-collapse" id="hrms-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-                    <li class="active">
-                        <a href="#">公司介绍 <span class="sr-only">(current)</span>  </a>
+                    <li>
+                        <a href="main">酒店介绍<span class="sr-only">(Hotel)</span>  </a>
                     </li>
-                    <li><a href="#">人力资源部</a></li>
-                    <li><a href="#">请假申请</a></li>
-                    <li><a href="#">报销申请</a></li>
-                    <li><a href="#">出勤记录</a></li>
+                    <li><a href="check_in">办理入住</a></li>
+                    <li><a href="#">房态查看</a></li>
+                    <li><a href="#">账单统计</a></li>
                 </ul>
 
                 <form class="navbar-form navbar-left">
@@ -44,7 +44,7 @@
                 </form>
                 <ul class="nav navbar-nav navbar-right">
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">账号管理(${user.username }) <span class="caret"></span></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">账号管理(${admin}) <span class="caret"></span></a>
                         <ul class="dropdown-menu nav nav-pills nav-stacked">
                             <li class="active"><a href="#" role="button" data-toggle="modal" data-target=".user-updata-modal"><span class="glyphicon glyphicon-pencil" aria-hidden="true" ></span> 修改信息</a></li>
                             <li><a href="#" role="button" data-toggle="modal" data-target=".user-phone-modal"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> 头像更换</a></li>

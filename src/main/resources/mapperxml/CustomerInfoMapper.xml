@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.edu.fjzzit.web.myhotel.mapper.CustomerInfoMapper">
+  <resultMap id="BaseResultMap" type="com.edu.fjzzit.web.myhotel.model.CustomerInfo">
+    <id column="customer_num" jdbcType="BIGINT" property="customerNum" />
+    <result column="customer_nick_name" jdbcType="VARCHAR" property="customerNickName" />
+    <result column="customer_name" jdbcType="VARCHAR" property="customerName" />
+    <result column="customer_sex" jdbcType="INTEGER" property="customerSex" />
+    <result column="customer_phone" jdbcType="VARCHAR" property="customerPhone" />
+    <result column="customer_ID" jdbcType="VARCHAR" property="customerId" />
+    <result column="customer_address" jdbcType="VARCHAR" property="customerAddress" />
+  </resultMap>
+  <!-- 分页查询顾客信息 -->
+  <select id="findCustomerInfoAll" resultMap="BaseResultMap">
+     select * from customer_info limit #{pageNumber},#{pageSize}
+  </select>
+  <!-- 查询所有记录数-->
+  <select id="selCount" resultType="java.lang.Long">
+     select count(*) from customer_info
+  </select>
+  <!-- 添加顾客信息-->
+  <insert id="insertSelective" parameterType="com.edu.fjzzit.web.myhotel.model.CustomerInfo">
+    insert into customer_info (customer_num , customer_nick_name, customer_name,
+    customer_sex,customer_phone,customer_ID,customer_address)
+    values (default ,#{customerNickName,jdbcType=VARCHAR}, #{customerName,jdbcType=VARCHAR}, #{customerSex,jdbcType=INTEGER},
+    #{customerPhone,jdbcType=VARCHAR},#{customerId,jdbcType=VARCHAR},#{customerAddress,jdbcType=VARCHAR})
+  </insert>
+  <!--查看昵称是否重复-->
+  <select id="queryCouldByCustomerNickName" parameterType="java.lang.String" resultType="java.lang.Long">
+    select count(*)
+    from customer_info
+    where customer_nick_name=#{customerNickName,jdbcType=VARCHAR}
+  </select>
+  <!-- 根据主键删除顾客信息-->
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from customer_info
+    where customer_num = #{customerNum,jdbcType=BIGINT}
+  </delete>
+  <!--根据主键修改顾客信息-->
+  <update id="updateByPrimaryKeySelective" parameterType="com.edu.fjzzit.web.myhotel.model.CustomerInfo">
+    update customer_info
+    <set>
+      <if test="customerNum!= null">
+        customer_num = #{customerNum,jdbcType=BIGINT},
+      </if>
+      <if test="customerNickName != null">
+        customer_nick_name = #{customerNickName,jdbcType=VARCHAR},
+      </if>
+      <if test="customerName != null">
+        customer_name = #{customerPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="customerSex != null">
+        customer_sex = #{customerSex,jdbcType=INTEGER},
+      </if>
+      <if test="customerPhone != null">
+        customer_phone = #{customerPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="customerId != null">
+        customer_ID = #{customerId,jdbcType=VARCHAR},
+      </if>
+      <if test="customerAddress != null">
+        customer_address = #{customerAddress,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where customer_num = #{customerNum,jdbcType=BIGINT}
+  </update>
+  <!--根据主键查询顾客信息-->
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select *
+    from customer_info
+    where customer_num = #{customerNum,jdbcType=BIGINT}
+  </select>
+</mapper>

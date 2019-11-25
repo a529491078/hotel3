@@ -84,16 +84,14 @@
 					type:'post',
 					dataType:'json',
 					success:function(result){
-						if(result.datas != 'success'){
+						if(result.code == 200){
 							alert(result.msg);
-							window.location.replace('main');
-							//window.location.href( '/view/admin/index.jsp');
+							window.location.href="get_main?adminName="+username;
 						}else{
 							removeClass(document.querySelector(".login"), "active");
 							removeClass(document.querySelector(".sk-rotating-plane"), "active");
 							document.querySelector(".login").style.display = "block";
 							alert(result.msg);
-							//changeCpacha();
 						}
 					}
 				});

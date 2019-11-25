@@ -45,8 +45,10 @@ public class CheckInInfoServiceImpl implements CheckInInfoService {
             roomOrderState=roomOrderMapper.queryOrderState(roomOrderNum);
             //若订单状态为0则可以入住登记,若为1抛出已入住异常，若为2抛出订单已取消异常
             if (roomOrderState==Byte.parseByte("1")){
+                System.out.println("若为1抛出已入住异常");
                 throw new MyException(ErrorCodeEnum.ALREADY_CHECKIN);
             }else if (roomOrderState==Byte.parseByte("2")){
+                System.out.println("若为2抛出订单已取消异常");
                 throw new MyException(ErrorCodeEnum.ORDER_IS_CANCEL);
             }else{
                 //查询订单详细中的房间类型流水号
@@ -56,6 +58,7 @@ public class CheckInInfoServiceImpl implements CheckInInfoService {
                 Integer roomCount=roomOrderDetailMapper.queryRoomCountByRoomOrderNum(roomOrderNum);//查询订单详细中的订房数量
                 Integer checkInCount=checkInInfoMapper.queryCustomerCheckInCount(customerName,customerPhone);//查询入住登记表中同个客户的登记入住次数
                 if (checkInCount>=roomCount) {//若已入住登记次数超过定房数，则抛出入住登记房间超过限制异常
+                    System.out.println("若已入住登记次数超过定房数，则抛出入住登记房间超过限制异常");
                     throw new MyException(ErrorCodeEnum.CHECKIN_MORETHAN_LIMIT);
                 }else {//入住次数符合订房数
                     //查询空房号集合
@@ -91,6 +94,7 @@ public class CheckInInfoServiceImpl implements CheckInInfoService {
                 }
             }
         } else {//客户无预定，现场预定房间，登记入住（抛出自定义无预定房间异常）
+            System.out.println("客户无预定，现场预定房间，登记入住（抛出自定义无预定房间异常");
             throw new MyException(ErrorCodeEnum.NON_RESERVEROOM);
         }
     }

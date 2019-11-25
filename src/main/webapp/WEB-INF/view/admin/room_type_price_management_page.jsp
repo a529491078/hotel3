@@ -31,6 +31,7 @@
                         <th>客房编号</th>
                         <th>客房类型</th>
                         <th>床型</th>
+                        <th>详图</th>
                         <th>楼层</th>
                         <th>客房套餐</th>
                         <th>早餐类型</th>
@@ -43,13 +44,14 @@
                                 <td>${tyep_price.roomTypeNum}</td>
                                 <td>${tyep_price.roomTypeName}</td>
                                 <td>${tyep_price.bedType}</td>
+                                <td><img src="${tyep_price.roomTypeImg}" width="100" height="100"></td>
                                 <td>${tyep_price.floor}</td>
                                 <td>${tyep_price.roomPriceName}</td>
                                 <td>${tyep_price.breakfastType}</td>
                                 <td>${tyep_price.roomPrice}</td>
                                 <td>${tyep_price.roomTypeDecs}</td>
                                 <td>
-                                    <a href="#" role="button" class="btn btn-primary tyep_price_edit_btn" data-toggle="modal" data-target=".room-update-modal">编辑</a>
+                                    <a href="get_upd_room_type_price_byid?roomTypeNum=${tyep_price.roomTypeNum}" role="button" class="btn btn-primary tyep_price_edit_btn">编辑</a>
                                     <a href="#" role="button" class="btn btn-danger tyep_price_delete_btn">删除</a>
                                 </td>
                             </tr>

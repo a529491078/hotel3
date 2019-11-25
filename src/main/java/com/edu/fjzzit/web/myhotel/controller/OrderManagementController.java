@@ -32,30 +32,26 @@ public class OrderManagementController  {
         }
     }
 
-    @PostMapping("/get_room_order_byid")
-    @ApiOperation("根据主键查询订单信息")
-    @RequiresRoles(value={"admin"})
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "token",value = "鉴权Token",dataType = "string",required = true,paramType = "header"),
-            @ApiImplicitParam(name = "roomOrderDetailNum",value = "订单详情主键",dataType = "string",required = true),
-    })
-    public ResultJson findRoomOrderDetailById(Long roomOrderDetailNum){
+    @RequestMapping("/get_upd_room_order_byid")
+    public ModelAndView findRoomOrderDetailById(Long roomOrderDetailNum){
         try{
             RoomOrderDetailAndRoomOrderDTO roomOrderDetailById = orderManagementService.findRoomOrderDetailById(roomOrderDetailNum);
-            return new ResultJson("200","查询成功!",roomOrderDetailById);
+            ModelAndView modelAndView=new ModelAndView();
+            modelAndView.addObject("orderInfo",roomOrderDetailById);
+            modelAndView.setViewName("/view/admin/edit_order_indo");
+            return modelAndView;
         }catch(Exception e){
             e.printStackTrace();
-            return new ResultJson("400","查询失败!",null);
+            return null;
         }
     }
-    @PostMapping("/upd_room_order_byid")
-    @ApiOperation("根据主键修改订单信息")
-    @RequiresRoles(value={"admin"})
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "token",value = "鉴权Token",dataType = "string",required = true,paramType = "header"),
-    })
-    public ResultJson updRoomOrderDetailAll(@RequestBody RoomOrderDetailAndRoomOrderDTO roomOrderDetailAndRoomOrderDTO){
+    @RequestMapping("/upd_room_order_byid")
+    @ResponseBody
+    public ResultJson updRoomOrderDetailAll(RoomOrderDetailAndRoomOrderDTO roomOrderDetailAndRoomOrderDTO){
         try{
+            //计算总价格
+            roomOrderDetailAndRoomOrderDTO.setRoomOrderDetailPrice(
+                    roomOrderDetailAndRoomOrderDTO.getRoomCount()*roomOrderDetailAndRoomOrderDTO.getRoomPrice());
             orderManagementService.updRoomOrderDetailAll(roomOrderDetailAndRoomOrderDTO);
             return new ResultJson("200","修改成功!",null);
         }catch(Exception e){

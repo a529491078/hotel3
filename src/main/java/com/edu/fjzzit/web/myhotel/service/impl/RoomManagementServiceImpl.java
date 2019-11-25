@@ -114,14 +114,15 @@ public class RoomManagementServiceImpl implements RoomManagementService {
     @Transactional
     public void insRoomTypeAndRoomPrice(RoomTypeAndRoomPriceDTO roomTypeAndRoomPriceDTO) {
         RoomType roomType=new RoomType();
-        roomType.setRoomTypeNum(roomTypeAndRoomPriceDTO.getRoomTypeNum());
-        roomType.setRoomTypeName(roomTypeAndRoomPriceDTO.getRoomTypeName());
+        String roomTypeName = roomTypeAndRoomPriceDTO.getRoomTypeName();
+        roomType.setRoomTypeName(roomTypeName);
         roomType.setBedType(roomTypeAndRoomPriceDTO.getBedType());
         roomType.setFloor(roomTypeAndRoomPriceDTO.getFloor());
         roomType.setRoomTypeDecs(roomTypeAndRoomPriceDTO.getRoomTypeDecs());
         roomTypeMapper.insertSelective(roomType);
+        Long roomTypeNumByRoomTypeNanme = roomInfoMapper.findRoomTypeNumByRoomTypeNanme(roomTypeName);
         RoomPrice roomPrice =new RoomPrice();
-        roomPrice.setRoomTypeNum(roomTypeAndRoomPriceDTO.getRoomTypeNum());
+        roomPrice.setRoomTypeNum(roomTypeNumByRoomTypeNanme);
         roomPrice.setBreakfastType(roomTypeAndRoomPriceDTO.getBreakfastType());
         roomPrice.setRoomPrice(roomTypeAndRoomPriceDTO.getRoomPrice());
         roomPrice.setRoomPriceName(roomTypeAndRoomPriceDTO.getRoomPriceName());

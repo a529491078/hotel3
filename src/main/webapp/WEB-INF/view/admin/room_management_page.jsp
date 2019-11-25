@@ -21,8 +21,8 @@
                 <!-- 路径导航 -->
                 <div class="panel-heading">
                     <ol class="breadcrumb">
-                        <li><a href="#">订单管理</a></li>
-                        <li class="active">订单信息</li>
+                        <li><a href="#">客房管理</a></li>
+                        <li class="active">客房信息</li>
                     </ol>
                 </div>
                 <!-- Table -->
@@ -53,9 +53,11 @@
                                 <td>${room.breakfastType}</td>
                                 <td>${room.roomPrice}</td>
                                 <td>${room.roomTypeDecs}</td>
-                                <td>${room.roomState}</td>
+                                <c:if test="${room.roomState==0}"><td>已入住</td></c:if>
+                                <c:if test="${room.roomState==1}"><td>已退房</td></c:if>
+                                <c:if test="${room.roomState==2}"><td>空闲</td></c:if>
                                 <td>
-                                    <a href="#" role="button" class="btn btn-primary room_edit_btn" data-toggle="modal" data-target=".room-update-modal">编辑</a>
+                                    <a href="get_upd_room_info_byid?roomId=${room.roomId}" role="button" class="btn btn-primary room_edit_btn">编辑</a>
                                     <a href="#" role="button" class="btn btn-danger room_delete_btn">删除</a>
                                 </td>
                             </tr>

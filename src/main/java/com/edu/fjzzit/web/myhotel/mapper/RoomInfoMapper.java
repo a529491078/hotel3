@@ -75,6 +75,13 @@ public interface RoomInfoMapper {
     RoomPrice findRoomPriceByRoomTypeNum(@Param("roomTypeNum") long roomTypeNum);
 
     /**
+     * 根据roomTypeName查询客房类型ID
+     * @param roomTypeName
+     * @return
+     */
+    Long findRoomTypeNumByRoomTypeNanme(@Param("roomTypeName") String roomTypeName);
+
+    /**
      * 查询所有客房套餐名
      * @return
      */

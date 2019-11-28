@@ -15,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -111,6 +112,27 @@ public class UserInfoMapperTest {
             System.out.println("exsits in");
         }else{
             System.out.println("not in");
+        }
+    }
+
+    @Test
+    public void dateFormatByString(){
+        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date date1=new Date();
+            Date date2=new Date();
+            date1 = inputFormat.parse("2019-11-08"); // 将字符型转换成日期型
+            date2 = inputFormat.parse("2019-11-08"); // 将字符型转换成日期型
+
+            long checkInTime=date1.getTime();
+            long checkOutTime=date2.getTime();
+            long times=checkOutTime-checkInTime;
+            int day=Math.abs((int) (times/1000/60/60/24));
+            if (day<=1)
+                day=1;
+            System.out.println(day);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

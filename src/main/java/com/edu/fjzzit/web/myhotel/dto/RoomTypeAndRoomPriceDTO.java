@@ -73,6 +73,8 @@ public class RoomTypeAndRoomPriceDTO {
      */
     private Integer roomPrice;
 
+    private Integer roomState;
+
     public Integer getRoomPrice(){return this.roomPrice;}
 
 }

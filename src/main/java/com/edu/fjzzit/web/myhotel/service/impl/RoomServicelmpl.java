@@ -9,7 +9,10 @@ import com.edu.fjzzit.web.myhotel.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -123,7 +126,13 @@ public class RoomServicelmpl implements RoomService {
             Integer roomCount=rddDTO.getRoomCount();
             String checkInDate=rddDTO.getCheckInDate();
             String checkOutDate=rddDTO.getCheckOutDate();
-            Integer roomOrderDetailPrice=roomPrice*roomCount;//计算总价
+            //计算两个日期相差的天数
+            int day=calculateDaysByDateTime(checkInDate,checkOutDate);
+            if(day<=1){//若天数小于一天，则视为1天
+                day=1;
+            }
+
+            Integer roomOrderDetailPrice=roomPrice*roomCount*day;//计算房间总价
 
             roomOrderDetail=new RoomOrderDetail();
             roomOrderDetail.setRoomOrderNum(roomOrderNum);
@@ -144,6 +153,36 @@ public class RoomServicelmpl implements RoomService {
     }
 
     /**
+     * 计算时间毫秒
+     * @param inVal
+     * @return
+     */
+    private long fromDateStringToLong(String inVal) {
+        Date date = null; // 定义时间类型
+        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            date = inputFormat.parse(inVal); // 将字符型转换成日期型
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return date.getTime(); // 返回毫秒数
+    }
+
+    /**
+     * 计算两个日期相差多少天
+     * @param checkInDate
+     * @param checkOutDate
+     * @return
+     */
+    private int calculateDaysByDateTime(String checkInDate,String checkOutDate){
+        long checkInTime=fromDateStringToLong(checkInDate);
+        long checkOutTime=fromDateStringToLong(checkOutDate);
+        long times=checkOutTime-checkInTime;
+        int day=Math.abs((int) (times/1000/60/60/24));
+        return day;
+    }
+
+    /**
      * 取消订单
      * @param orderNum
      * @throws Exception
@@ -159,6 +198,47 @@ public class RoomServicelmpl implements RoomService {
         }else if(orderState==Byte.parseByte("2")){
             throw new MyException(ErrorCodeEnum.IS_CHANCELED);
         }
+    }
+
+    /**
+     * 查询房间类型信息
+     * @param roomTypeNum
+     * @return
+     */
+    @Override
+    public RoomType findByRoomTypeNum(Long roomTypeNum) {
+        return roomTypeMapper.selectByPrimaryKey(roomTypeNum);
+    }
+
+    /**
+     * 查询房间套餐信息
+     * @param roomPriceName
+     * @return
+     */
+    @Override
+    public RoomPrice findByRoomPriceName(String roomPriceName) {
+        return roomPriceMapper.selectByRoomPriceName(roomPriceName);
+    }
+
+    /**
+     * 计算房间总价
+     * @param roomPrice
+     * @param roomCount
+     * @param checkInDate
+     * @param checkOutDate
+     * @return
+     */
+    @Override
+    public Integer calculateRoomDetailPrice(Integer roomPrice, Integer roomCount, String checkInDate, String checkOutDate) {
+        //计算两个日期相差的天数
+        int day=calculateDaysByDateTime(checkInDate,checkOutDate);
+        if(day<=1){//若天数小于一天，则视为1天
+            day=1;
+        }
+
+        Integer roomOrderDetailPrice=roomPrice*roomCount*day;//计算房间总价
+
+        return roomOrderDetailPrice;
     }
 
     /**

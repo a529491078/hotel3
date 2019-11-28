@@ -19,6 +19,13 @@
     -->
     room_price_num, room_type_num, room_price_name, breakfast_type, room_price
   </sql>
+  <!--根据套餐名查询房间套餐信息-->
+  <select id="selectByRoomPriceName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from room_price
+    where room_price_name= #{roomPriceName,jdbcType=VARCHAR}
+  </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     <!--
       WARNING - @mbggenerated

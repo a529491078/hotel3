@@ -18,6 +18,13 @@
     -->
     room_order_num, customer_name, customer_phone, room_order_state
   </sql>
+  <!--查找客户订单信息-->
+  <select id="findRoomOrderByCustomerName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from room_order
+    where customer_name=#{customerName,jdbcType=VARCHAR}
+  </select>
   <!--查询订单状态-->
   <select id="queryOrderState" resultType="java.lang.Byte">
     select room_order_state

@@ -27,6 +27,13 @@ public interface RoomOrderDetailMapper {
 
     List<RoomOrderDetail> findRoomOrderDetailAll(@Param("pageNumber") int pageNumber, @Param("pageSize") int pageSize);
 
+    /**
+     * 根据订单流水号查询订单详细
+     * @param roomOrderNum
+     * @return
+     */
+    RoomOrderDetail findRoomOrderDetailByRoomOrderNum(@Param("roomOrderNum") Long roomOrderNum);
+
     RoomOrder findRoomOrderByRoomOrderNum(@Param("roomOrderNum")Long roomOrderNum);
 
     long selCount();

@@ -1,6 +1,7 @@
 package com.edu.fjzzit.web.myhotel.service.impl;
 
 import com.edu.fjzzit.web.myhotel.dto.FreeRoomDTO;
+import com.edu.fjzzit.web.myhotel.dto.MyOrderDTO;
 import com.edu.fjzzit.web.myhotel.dto.RoomOrderDTO;
 import com.edu.fjzzit.web.myhotel.dto.RoomOrderDetailDTO;
 import com.edu.fjzzit.web.myhotel.mapper.*;
@@ -8,6 +9,7 @@ import com.edu.fjzzit.web.myhotel.model.*;
 import com.edu.fjzzit.web.myhotel.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import sun.invoke.empty.Empty;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -32,6 +34,12 @@ public class RoomServicelmpl implements RoomService {
 
     @Autowired
     private RoomOrderDetailMapper roomOrderDetailMapper;
+
+    @Autowired
+    private UserOrderMapper userOrderMapper;
+
+    @Autowired
+    private UserInfoMapper userInfoMapper;
 
     /**
      * 查找空房
@@ -93,12 +101,72 @@ public class RoomServicelmpl implements RoomService {
     }
 
     /**
-     * 订房
+     * 订房(后台管理员)
      * @param roomOrderDTO
      * @return
      */
     @Override
     public Long reserveRoom(RoomOrderDTO roomOrderDTO) {
+        RoomOrder roomOrder;
+        RoomOrderDetail roomOrderDetail;
+
+        String customerName=roomOrderDTO.getCustomerName();
+        String customerPhone= roomOrderDTO.getCustomerPhone();
+
+        roomOrder=new RoomOrder();
+        roomOrder.setCustomerName(customerName);
+        roomOrder.setCustomerPhone(customerPhone);
+        roomOrder.setRoomOrderState(Byte.parseByte("0"));
+        roomOrderMapper.insert(roomOrder);//插入订单
+        //获取生成的订单的流水号
+        Long roomOrderNum=roomOrderMapper.selectRoomOrderNumByCustomerName(customerName);
+
+        List<RoomOrderDetailDTO> roomOrderDetailDTOList=roomOrderDTO.getRoomOrderDetailDTOList();
+        for (RoomOrderDetailDTO rddDTO:roomOrderDetailDTOList
+        ) {
+            String roomTypeName=rddDTO.getRoomTypeName();
+            String roomPriceName=rddDTO.getRoomPriceName();
+            String bedType=roomPriceName.substring(roomTypeName.length());//获取床型
+            Long roomTypeNum=roomTypeMapper.getRoomTypeNumByRoomTypeNameAndBedType(roomTypeName,bedType);//1
+
+            Integer roomPrice=rddDTO.getRoomPrice();
+            String breakfastType=rddDTO.getBreakfastType();
+            Integer roomCount=rddDTO.getRoomCount();
+            String checkInDate=rddDTO.getCheckInDate();
+            String checkOutDate=rddDTO.getCheckOutDate();
+            //计算两个日期相差的天数
+            int day=calculateDaysByDateTime(checkInDate,checkOutDate);
+            if(day<=1){//若天数小于一天，则视为1天
+                day=1;
+            }
+
+            Integer roomOrderDetailPrice=roomPrice*roomCount*day;//计算房间总价
+
+            roomOrderDetail=new RoomOrderDetail();
+            roomOrderDetail.setRoomOrderNum(roomOrderNum);
+            roomOrderDetail.setRoomTypeNum(roomTypeNum);
+            roomOrderDetail.setRoomPriceName(roomPriceName);
+            roomOrderDetail.setRoomPrice(roomPrice);
+            roomOrderDetail.setBreakfastType(breakfastType);
+            roomOrderDetail.setRoomCount(roomCount);
+            roomOrderDetail.setCheckInTime(checkInDate);
+            roomOrderDetail.setCheckOutTime(checkOutDate);
+            roomOrderDetail.setRoomOrderDetailPrice(roomOrderDetailPrice);
+
+            roomOrderDetailMapper.insert(roomOrderDetail);//插入订单详情
+            updateFreeCount(roomTypeNum,checkInDate,checkOutDate,roomCount);//更新空房数,保持数据正确性和一致性
+        }
+
+        return roomOrderNum;
+    }
+
+    /**
+     * 订房(前端用户)
+     * @param roomOrderDTO
+     * @return
+     */
+    @Override
+    public Long reserveRoomM(RoomOrderDTO roomOrderDTO,String userName) {
         RoomOrder roomOrder;
         RoomOrderDetail roomOrderDetail;
 
@@ -131,8 +199,8 @@ public class RoomServicelmpl implements RoomService {
             if(day<=1){//若天数小于一天，则视为1天
                 day=1;
             }
-
-            Integer roomOrderDetailPrice=roomPrice*roomCount*day;//计算房间总价
+           //计算房间总价
+            Integer roomOrderDetailPrice=roomPrice*roomCount*day;
 
             roomOrderDetail=new RoomOrderDetail();
             roomOrderDetail.setRoomOrderNum(roomOrderNum);
@@ -144,9 +212,15 @@ public class RoomServicelmpl implements RoomService {
             roomOrderDetail.setCheckInTime(checkInDate);
             roomOrderDetail.setCheckOutTime(checkOutDate);
             roomOrderDetail.setRoomOrderDetailPrice(roomOrderDetailPrice);
-
-            roomOrderDetailMapper.insert(roomOrderDetail);//插入订单详情
-            updateFreeCount(roomTypeNum,checkInDate,checkOutDate,roomCount);//更新空房数,保持数据正确性和一致性
+            //插入订单详情表
+            roomOrderDetailMapper.insert(roomOrderDetail);
+            UserOrder userOrder=new UserOrder();
+            userOrder.setUserId(userInfoMapper.getIdByUserName(userName));
+            userOrder.setRoomOrderNum(roomOrderNum);
+            //插入客户订单表
+            userOrderMapper.insert(userOrder);
+            //更新空房数,保持数据正确性和一致性
+            updateFreeCount(roomTypeNum,checkInDate,checkOutDate,roomCount);
         }
 
         return roomOrderNum;
@@ -190,7 +264,6 @@ public class RoomServicelmpl implements RoomService {
     @Override
     public void cancelOrder(Long orderNum) throws Exception {
         Byte orderState=roomOrderMapper.findOrderState(orderNum);
-        System.out.println("状态值为："+orderState);
         if (orderState==Byte.parseByte("0")) {
             roomOrderMapper.cancelOrderByNum(orderNum, Byte.parseByte("2"));
         }else if(orderState==Byte.parseByte("1")){
@@ -239,6 +312,72 @@ public class RoomServicelmpl implements RoomService {
         Integer roomOrderDetailPrice=roomPrice*roomCount*day;//计算房间总价
 
         return roomOrderDetailPrice;
+    }
+
+    /**
+     * 查找客户订单信息
+     * @return
+     */
+    @Override
+    public List<MyOrderDTO> findUserOrderByCustomerName(String customerName) throws Exception {
+        Integer userId=userInfoMapper.getIdByUserName(customerName);
+        List<UserOrder> userOrderList=userOrderMapper.findUserOrderByUserId(userId);
+        if (userOrderList.size()==0){
+            //若客户暂无订单信息，抛出自定义客户无订单信息异常
+            throw new MyException(ErrorCodeEnum.NON_USERORDER);
+        }
+        //查询该客户的所有订单流水号
+        List<Long> roomOrderNumList=userOrderMapper.selectRoomOrderNumByUserId(userId);
+        //初始化所有数据传输格式
+        MyOrderDTO myOrderDTO;
+        RoomOrderDetailDTO roomOrderDetailDTO;
+        List<MyOrderDTO> myOrderDTOList=new ArrayList<>();
+        List<RoomOrderDetailDTO> roomOrderDetailDTOList;
+
+        //查询客户订单信息
+        for (Long roomOrderNum:roomOrderNumList
+             ) {
+            RoomOrder roomOrder=roomOrderMapper.selectByPrimaryKey(roomOrderNum);
+            myOrderDTO=new MyOrderDTO();
+            myOrderDTO.setRoomOrderNum(roomOrderNum);
+            myOrderDTO.setCustomerName(roomOrder.getCustomerName());
+            myOrderDTO.setCustomerPhone(roomOrder.getCustomerPhone());
+            myOrderDTO.setRoomOrderState(roomOrder.getRoomOrderState());
+
+            RoomOrderDetail roomOrderDetail=roomOrderDetailMapper.findRoomOrderDetailByRoomOrderNum(roomOrderNum);
+            roomOrderDetailDTO=new RoomOrderDetailDTO();
+            roomOrderDetailDTO.setRoomTypeName(roomTypeMapper.findRoomTypeName(roomOrderDetail.getRoomTypeNum()));
+            roomOrderDetailDTO.setRoomPriceName(roomOrderDetail.getRoomPriceName());
+            roomOrderDetailDTO.setCheckInDate(roomOrderDetail.getCheckInTime());
+            roomOrderDetailDTO.setCheckOutDate(roomOrderDetail.getCheckOutTime());
+            roomOrderDetailDTOList=new ArrayList<>();
+            roomOrderDetailDTOList.add(roomOrderDetailDTO);
+            myOrderDTO.setRoomOrderDetailDTOList(roomOrderDetailDTOList);
+            myOrderDTOList.add(myOrderDTO);
+        }
+
+        return myOrderDTOList;
+    }
+
+    /**
+     * 根据房间类型名称和床型查找房间类型流水号
+     * @param roomTypeName
+     * @param bedType
+     * @return
+     */
+    @Override
+    public Long findRoomTypeNum(String roomTypeName,String bedType) {
+        return roomTypeMapper.findRoomTypeNum(roomTypeName,bedType);
+    }
+
+    /**
+     * 根据房间类型流水号查询房图
+     * @param roomTypeNum
+     * @return
+     */
+    @Override
+    public String findRoomTypeImgByRoomTypeNum(Long roomTypeNum) {
+        return roomTypeMapper.findRoomTypeImgByRoomTypeNum(roomTypeNum);
     }
 
     /**

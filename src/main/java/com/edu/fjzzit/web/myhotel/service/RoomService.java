@@ -1,8 +1,10 @@
 package com.edu.fjzzit.web.myhotel.service;
 
 import com.edu.fjzzit.web.myhotel.dto.FreeRoomDTO;
+import com.edu.fjzzit.web.myhotel.dto.MyOrderDTO;
 import com.edu.fjzzit.web.myhotel.dto.RoomOrderDTO;
 import com.edu.fjzzit.web.myhotel.model.RoomInfo;
+import com.edu.fjzzit.web.myhotel.model.RoomOrder;
 import com.edu.fjzzit.web.myhotel.model.RoomPrice;
 import com.edu.fjzzit.web.myhotel.model.RoomType;
 
@@ -24,6 +26,14 @@ public interface RoomService {
      * @return
      */
     Long reserveRoom(RoomOrderDTO roomOrderDTO);
+
+    /**
+     * 订房
+     * @param roomOrderDTO
+     * @param userName
+     * @return
+     */
+    Long reserveRoomM(RoomOrderDTO roomOrderDTO,String userName);
 
     /**
      * 取消订单
@@ -55,4 +65,25 @@ public interface RoomService {
      * @return
      */
     Integer calculateRoomDetailPrice(Integer roomPrice,Integer roomCount,String checkInDate,String checkOutDate);
+
+    /**
+     * 查找客户订单信息
+     * @return
+     */
+    List<MyOrderDTO> findUserOrderByCustomerName(String customerName) throws Exception ;
+
+    /**
+     * 根据房间类型名称和床型查找房间类型流水号
+     * @param roomTypeName
+     * @param bedType
+     * @return
+     */
+    Long findRoomTypeNum(String roomTypeName,String bedType);
+
+    /**
+     * 根据房间类型流水号查询房图
+     * @param roomTypeNum
+     * @return
+     */
+    String findRoomTypeImgByRoomTypeNum(Long roomTypeNum);
 }

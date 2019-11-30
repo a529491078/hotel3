@@ -13,6 +13,7 @@ public enum ErrorCodeEnum implements ErrorCode {
     ORDER_IS_CANCEL("405","订单已取消!"),
     IS_CHECKIN("406","该客户已入住，无法取消!"),
     IS_CHANCELED("407","该订单已取消!"),
+    NON_USERORDER("408","该用户暂无订房!")
 
     ;
 

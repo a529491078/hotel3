@@ -1,13 +1,11 @@
 package com.edu.fjzzit.web.myhotel.controller;
 
 import com.edu.fjzzit.web.myhotel.config.ResultJson;
+import com.edu.fjzzit.web.myhotel.dto.MyOrderDTO;
 import com.edu.fjzzit.web.myhotel.dto.RoomOrderDTO;
 import com.edu.fjzzit.web.myhotel.dto.RoomOrderDetailDTO;
 import com.edu.fjzzit.web.myhotel.dto.RoomTypeAndRoomPriceDTO;
-import com.edu.fjzzit.web.myhotel.model.Page;
-import com.edu.fjzzit.web.myhotel.model.RoomPrice;
-import com.edu.fjzzit.web.myhotel.model.RoomType;
-import com.edu.fjzzit.web.myhotel.model.UserInfo;
+import com.edu.fjzzit.web.myhotel.model.*;
 import com.edu.fjzzit.web.myhotel.service.RoomManagementService;
 import com.edu.fjzzit.web.myhotel.service.RoomService;
 import org.apache.shiro.SecurityUtils;
@@ -65,11 +63,12 @@ public class UserViewController {
      * @return
      */
     @RequestMapping("/book_order")
-    public ModelAndView bookOrder(Long roomTypeId){
+    public ModelAndView bookOrder(@RequestParam("userName")String userName,Long roomTypeId,HttpSession session){
         try{
             RoomTypeAndRoomPriceDTO roomTypeAndRoomPriceDTO=roomManagementService.findRoomTypeAndRoomPriceById(roomTypeId);
             ModelAndView modelAndView=new ModelAndView();
             modelAndView.addObject("roomTypePrice",roomTypeAndRoomPriceDTO);
+            session.setAttribute("user",userName);
             modelAndView.setViewName("/view/home/account/book_order");
             return modelAndView;
         }catch(Exception e){
@@ -99,7 +98,7 @@ public class UserViewController {
      */
     @RequestMapping("/order_confirm")
     @ResponseBody
-    public ResultJson orderConfirm(Long roomTypeNum,String customerName,String customerPhone,String checkInDate,
+    public ResultJson orderConfirm(@RequestParam("userName")String userName,Long roomTypeNum,String customerName,String customerPhone,String checkInDate,
                                    String checkOutDate,Integer roomCount,String roomPriceName){
         try {
             //1.查找房间类型名称->roomType
@@ -124,21 +123,12 @@ public class UserViewController {
             roomOrderDTO.setCustomerPhone(customerPhone);
             roomOrderDTO.setRoomOrderDetailDTOList(roomOrderDetailDTOList);
             //4.预定房间
-            Long roomOrderNum=roomService.reserveRoom(roomOrderDTO);
+            Long roomOrderNum=roomService.reserveRoomM(roomOrderDTO,userName);
 
             return new ResultJson("200","预定成功!",roomOrderNum);
         }catch(Exception e){
             return new ResultJson("400","预定失败!",null);
         }
-    }
-
-    /**
-     * 用户中心
-     * @return
-     */
-    @RequestMapping("/use_center")
-    public String userCenter(){
-        return "/view/home/account/index";
     }
 
     /**
@@ -192,5 +182,68 @@ public class UserViewController {
     @RequestMapping("/user_register")
     public String UserRegister(){
         return "/view/home/index/reg";
+    }
+
+    /**
+     * 用户中心->我的订单模块
+     * @return
+     */
+    @RequestMapping("/use_center_order")
+    public ModelAndView myOrder(@RequestParam("userName")String userName,HttpSession session){
+        session.setAttribute("user",userName);
+        ModelAndView modelAndView = new ModelAndView();
+        try {
+            //1.查询订单信息->入住人，手机号,订单状态
+            List<MyOrderDTO> myOrderDTOList = roomService.findUserOrderByCustomerName(userName);
+            //2.根据订单详细信息的房型流水号，查询房间类型->房型名，房型图片
+            Long roomTypeNum;//存储房间类型流水号
+            String  roomTypeImg="/static/admin/login/images/company1.jpg";//存储房图
+            for (MyOrderDTO myOrderDTO : myOrderDTOList
+            ) {
+                for (RoomOrderDetailDTO roomOrderDetailDTO : myOrderDTO.getRoomOrderDetailDTOList()
+                ) {
+                    String roomPriceName=roomOrderDetailDTO.getRoomPriceName();
+                    //获取床型
+                    String bedType=roomPriceName.substring(roomOrderDetailDTO.getRoomTypeName().length());
+                    //获取房间类型流水号
+                    roomTypeNum = roomService.findRoomTypeNum(roomOrderDetailDTO.getRoomTypeName(),bedType);
+                    //获取房图
+                    roomTypeImg= roomService.findRoomTypeImgByRoomTypeNum(roomTypeNum);
+                }
+            }
+
+            modelAndView.addObject("myOrderDTOList", myOrderDTOList);
+            modelAndView.addObject("roomTypeImg", roomTypeImg);
+            modelAndView.setViewName("/view/home/account/index");
+        }catch(MyException e){
+            System.out.println("e_code->"+e.getErrorCode()+"e_mess->"+e.getDescription());
+            modelAndView.addObject("myOrderDTOList", null);
+            modelAndView.setViewName("/view/home/account/index");
+        }catch (Exception e){
+            e.printStackTrace();
+            modelAndView.addObject("myOrderDTOList", null);
+            modelAndView.setViewName("/view/home/account/index");
+        }finally {
+            return modelAndView;
+        }
+    }
+
+    /**
+     * 取消订单
+     * @param orderNum
+     * @return
+     */
+    @RequestMapping("/cancel_order")
+    @ResponseBody
+    public ResultJson cancelOrder(Long orderNum){
+        try{
+            roomService.cancelOrder(orderNum);
+            return new ResultJson("200","取消成功!",null);
+        }catch(MyException e){
+            return new ResultJson(e.getErrorCode(),e.getDescription(),null);
+        }catch(Exception e){
+            e.printStackTrace();
+            return new ResultJson("400","取消失败!",null);
+        }
     }
 }

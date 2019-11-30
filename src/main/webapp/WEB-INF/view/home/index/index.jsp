@@ -29,7 +29,7 @@
         </c:if>
         <c:if test="${user != null }">
             <font color="red">欢迎您：${user }&nbsp;&nbsp;|&nbsp;&nbsp;</font>
-            <a href="/user/use_center">用户中心</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+            <a href="/user/use_center_order?userName=${user }">用户中心</a>&nbsp;&nbsp;|&nbsp;&nbsp;
             <a id="logout">注销登录</a>&nbsp;
         </c:if>
     </p>
@@ -90,7 +90,8 @@
           		<input type="button" class="disable" value="满房" >
           	</c:if>
           	<c:if test="${type_price.roomState == 0 }">
-          		<input type="button" value="预订" onclick="window.location.href='/user/book_order?roomTypeId=${type_price.roomTypeNum }'" >
+          		<input type="button" value="预订" onclick="window.location.href=
+                        '/user/book_order?roomTypeId=${type_price.roomTypeNum }&userName=${user }'" >
           	</c:if>
           </td>
         </tr>

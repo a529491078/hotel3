@@ -68,7 +68,7 @@ public class CheckInInfoServiceImpl implements CheckInInfoService {
                     String roomNum = "";//保存空房号
                     for (String rn : roomNumList
                     ) {
-                        if (rn != null && rn != "") {
+                        if (rn != null&&rn!="") {
                             roomNum = rn;
                             break;
                         }

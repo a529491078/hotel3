@@ -36,6 +36,13 @@
     room_order_detail_num, room_order_num, room_type_num, room_price_name, room_price, 
     breakfast_type, room_count, check_in_time, check_out_time, room_order_detail_price
   </sql>
+  <!--根据订单流水号查询订单详细-->
+  <select id="findRoomOrderDetailByRoomOrderNum" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from room_order_detail
+    where room_order_num=#{roomOrderNum,jdbcType=BIGINT}
+  </select>
   <!--根据订单流水号查询房间类型流水号-->
   <select id="queryRoomTypeNumByRoomOrderNum" parameterType="java.lang.Long" resultType="java.lang.Long">
     select room_type_num

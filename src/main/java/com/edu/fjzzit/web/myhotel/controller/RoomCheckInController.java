@@ -18,9 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/room_check_in_manager")
 @Api(tags = "房间入住登记管理")
 public class RoomCheckInController {
-
-    //测试分支
-
     @Autowired
     private CheckInInfoService checkInInfoService;
 

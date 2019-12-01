@@ -27,6 +27,12 @@ public class RoomManagementController {
     @Autowired
     private RoomManagementService roomManagementService;
 
+    /**
+     * 查询所有客房信息
+     * @param pageNumber 当前页
+     * @param pageSize 每页个数
+     * @return
+     */
     @RequestMapping("/get_room_info_page")
     @RequiresRoles(value={"admin"},logical = Logical.OR)
     public ModelAndView fingRoomInfoAllByPage(@RequestParam(defaultValue="1")Integer pageNumber, @RequestParam(defaultValue="5")Integer pageSize){
@@ -41,6 +47,12 @@ public class RoomManagementController {
         }
     }
 
+    /**
+     * 查询所有客房套餐信息
+     * @param pageNumber 当前页
+     * @param pageSize 每页个数
+     * @return
+     */
     @RequestMapping("/get_room_type_price_page")
     @RequiresRoles(value={"admin"},logical = Logical.OR)
     public ModelAndView findRoomTypeAndRoomPriceAll(@RequestParam(defaultValue="1")Integer pageNumber, @RequestParam(defaultValue="5")Integer pageSize){
@@ -55,6 +67,10 @@ public class RoomManagementController {
         }
     }
 
+    /**
+     * 回显套餐列表
+     * @return
+     */
     @RequestMapping("/get_roomPriceName_roomTypeNum")
     @ResponseBody
     @RequiresUser
@@ -68,6 +84,11 @@ public class RoomManagementController {
         }
     }
 
+    /**
+     * 根据主键添加客房信息
+     * @param roomInfo 主键
+     * @return
+     */
     @RequestMapping("/ins_room_info")
     @ResponseBody
     @RequiresRoles(value={"admin"},logical = Logical.OR)
@@ -81,7 +102,13 @@ public class RoomManagementController {
         }
     }
 
-    @PostMapping("/ins_room_type_price_info")
+    /**
+     * 添加客房套餐信息
+     * @param file_img 图片
+     * @param roomTypeAndRoomPriceDTO 套餐信息
+     * @return
+     */
+    @RequestMapping("/ins_room_type_price_info")
     @ResponseBody
     @RequiresRoles(value={"admin"},logical = Logical.OR)
     public ResultJson insRoomTypeAndRoomPrice(MultipartFile file_img,RoomTypeAndRoomPriceDTO roomTypeAndRoomPriceDTO){
@@ -106,6 +133,12 @@ public class RoomManagementController {
             return new ResultJson("400","添加失败!",null);
         }
     }
+
+    /**
+     * 根据主键查看客房信息
+     * @param roomId
+     * @return
+     */
     @RequestMapping("/get_room_info_byid")
     @ResponseBody
     @RequiresRoles(value={"admin"},logical = Logical.OR)
@@ -119,6 +152,11 @@ public class RoomManagementController {
         }
     }
 
+    /**
+     * 根据主键回显客房信息
+     * @param roomId 主键
+     * @return
+     */
     @RequestMapping("/get_upd_room_info_byid")
     @RequiresRoles(value={"admin"},logical = Logical.OR)
     public ModelAndView findUpdRoomInfoById(Integer roomId){
@@ -136,7 +174,7 @@ public class RoomManagementController {
 
     /**
      * 判断房间名是否重复
-     * @param roomNum
+     * @param roomNum 主键
      * @return
      */
     @RequestMapping("/get_not_room_id_byid")
@@ -156,6 +194,11 @@ public class RoomManagementController {
         }
     }
 
+    /**
+     * 根据主键回显客房套餐信息
+     * @param roomTypeNum 主键
+     * @return
+     */
     @RequestMapping("/get_upd_room_type_price_byid")
     @RequiresRoles(value={"admin"},logical = Logical.OR)
     public ModelAndView findRoomTypeAndRoomPriceById(Long roomTypeNum){
@@ -171,8 +214,11 @@ public class RoomManagementController {
         }
     }
 
-
-
+    /**
+     * 根据主键修改客房信息
+     * @param roomInfo 主键
+     * @return
+     */
     @RequestMapping("/upd_room_info_byid")
     @ResponseBody
     @RequiresRoles(value={"admin"},logical = Logical.OR)
@@ -186,6 +232,12 @@ public class RoomManagementController {
         }
     }
 
+    /**
+     * 根据主键修改客房套餐信息
+     * @param file_img 图片
+     * @param roomTypeAndRoomPriceDTO 套餐信息
+     * @return
+     */
     @RequestMapping("/upd_room_type_price_byid")
     @ResponseBody
     @RequiresRoles(value={"admin"},logical = Logical.OR)
@@ -216,6 +268,11 @@ public class RoomManagementController {
         }
     }
 
+    /**
+     * 根据主键删除客房信息
+     * @param roomId 主键
+     * @return
+     */
     @PostMapping("/del_room_info_byid")
     @ResponseBody
     @RequiresRoles(value={"admin"},logical = Logical.OR)
@@ -229,6 +286,11 @@ public class RoomManagementController {
         }
     }
 
+    /**
+     * 根据主键删除客房套餐信息
+     * @param roomTypeNum 主键
+     * @return
+     */
     @RequestMapping("/del_room_type_price_byid")
     @ResponseBody
     @RequiresRoles(value={"admin"},logical = Logical.OR)
@@ -242,6 +304,11 @@ public class RoomManagementController {
         }
     }
 
+    /**
+     * 权限不足
+     * @param e
+     * @return
+     */
     @RequiresUser
     @ExceptionHandler(value = {org.apache.shiro.authz.AuthorizationException.class})
     public String authorizationExceptionHandler(Exception e) {

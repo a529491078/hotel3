@@ -21,6 +21,12 @@ public class OrderManagementController  {
     @Autowired
     private OrderManagementService orderManagementService;
 
+    /**
+     * 显示所有订单信息
+     * @param pageNumber 当前页
+     * @param pageSize 每页个数
+     * @return
+     */
     @RequestMapping("/get_room_order_page")
     @RequiresRoles(value={"admin","manager"},logical = Logical.OR)
     public ModelAndView fingOrderInfoAllByPage(@RequestParam(defaultValue="1")Integer pageNumber, @RequestParam(defaultValue="5")Integer pageSize){
@@ -35,6 +41,11 @@ public class OrderManagementController  {
         }
     }
 
+    /**
+     * 根据主键回显订单信息
+     * @param roomOrderDetailNum 主键
+     * @return
+     */
     @RequestMapping("/get_upd_room_order_byid")
     public ModelAndView findRoomOrderDetailById(Long roomOrderDetailNum){
         try{
@@ -48,6 +59,12 @@ public class OrderManagementController  {
             return null;
         }
     }
+
+    /**
+     * 根据主键修改订单信息
+     * @param roomOrderDetailAndRoomOrderDTO 主键
+     * @return
+     */
     @RequestMapping("/upd_room_order_byid")
     @ResponseBody
     public ResultJson updRoomOrderDetailAll(RoomOrderDetailAndRoomOrderDTO roomOrderDetailAndRoomOrderDTO){
@@ -63,6 +80,11 @@ public class OrderManagementController  {
         }
     }
 
+    /**
+     * 根据主键删除订单信息
+     * @param roomOrderDetailNum 主键
+     * @return
+     */
     @RequestMapping("/del_room_order_byid")
     @ResponseBody
     public ResultJson delRoomOrderDetailById(Long roomOrderDetailNum) {
@@ -74,6 +96,12 @@ public class OrderManagementController  {
             return new ResultJson("400", "删除失败!", null);
         }
     }
+
+    /**
+     * 权限不够
+     * @param e
+     * @return
+     */
     @RequiresUser
     @ExceptionHandler(value = {org.apache.shiro.authz.AuthorizationException.class})
     public String authorizationExceptionHandler(Exception e) {

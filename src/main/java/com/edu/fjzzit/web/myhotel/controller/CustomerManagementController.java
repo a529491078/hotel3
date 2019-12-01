@@ -18,6 +18,12 @@ public class CustomerManagementController {
     @Autowired
     private CustomerManagementService customerManagementService;
 
+    /**
+     * 查询所有客户信息
+     * @param pageNumber 当前页
+     * @param pageSize 每页个数
+     * @return
+     */
     @RequestMapping("/get_customer_info_page")
     @RequiresRoles(value={"admin","manager"},logical = Logical.OR)
     public ModelAndView findCustomerInfoAll(@RequestParam(defaultValue="1")Integer pageNumber, @RequestParam(defaultValue="5")Integer pageSize){
@@ -33,6 +39,11 @@ public class CustomerManagementController {
         }
     }
 
+    /**
+     * 根据主键删除客户信息
+     * @param customerNum 主键
+     * @return
+     */
     @RequestMapping("/del_customer_info_byid")
     @ResponseBody
     @RequiresRoles(value={"admin","manager"},logical = Logical.OR)
@@ -45,6 +56,12 @@ public class CustomerManagementController {
             return new ResultJson("400", "删除失败!", null);
         }
     }
+
+    /**
+     * 根据主键回显客户信息
+     * @param customerNum 主键
+     * @return
+     */
     @RequestMapping("/get_customer_info_byid")
     @RequiresRoles(value={"admin","manager"},logical = Logical.OR)
     public ModelAndView findCustomerInfoById(Long customerNum){
@@ -59,6 +76,12 @@ public class CustomerManagementController {
             return null;
         }
     }
+
+    /**
+     * 判断昵称是否存在
+     * @param customerNickName 昵称
+     * @return
+     */
     @RequestMapping("/get_not_customer_info_byid")
     @ResponseBody
     @RequiresRoles(value={"admin","manager"},logical = Logical.OR)
@@ -75,6 +98,12 @@ public class CustomerManagementController {
             return new ResultJson("400","查询失败!",null);
         }
     }
+
+    /**
+     * 根据主键修改客户信息
+     * @param customerInfo 客房信息
+     * @return
+     */
     @RequestMapping("/upd_customer_info_byid")
     @ResponseBody
     @RequiresRoles(value={"admin","manager"},logical = Logical.OR)
@@ -87,6 +116,12 @@ public class CustomerManagementController {
             return new ResultJson("400","修改失败!",null);
         }
     }
+
+    /**
+     * 根据主键添加客户信息
+     * @param customerInfo 主键
+     * @return
+     */
     @RequestMapping("/ins_customer_info")
     @ResponseBody
     @RequiresRoles(value={"admin","manager"},logical = Logical.OR)
@@ -99,6 +134,12 @@ public class CustomerManagementController {
             return new ResultJson("400","添加失败!",null);
         }
     }
+
+    /**
+     * 权限不够
+     * @param e
+     * @return
+     */
     @RequiresUser
     @ExceptionHandler(value = {org.apache.shiro.authz.AuthorizationException.class})
     public String authorizationExceptionHandler(Exception e) {

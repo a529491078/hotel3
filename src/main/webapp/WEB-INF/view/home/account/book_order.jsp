@@ -90,8 +90,8 @@
     <div class="malog">
         <div class="message">
             <p class="msgs"></p>
-            <p>您可以在 <a href="index#order">我的订单</a>查看详情</p>
-            <p>系统会在<span class="num">5</span>秒后跳转会 <a href="../index">菜单列表</a></p>
+            <p>您可以在 <a href="index#order?userName=${user}">我的订单</a>查看详情</p>
+            <p>系统会在<span class="num">3</span>秒后会跳转 <a href="/user/use_center_order?userName=${user}">菜单列表</a></p>
         </div>
     </div>
 
@@ -160,7 +160,7 @@
     	//$("#idCard").next("span.msg").text('');
     	//var remark = $("#remark").val();
     	$.ajax({
-    		url:'order_confirm',
+    		url:'order_confirm?userName=${user}',
     		type:'post',
     		dataType:'json',
     		data:{roomTypeNum:'${roomTypePrice.roomTypeNum }',customerName:name,customerPhone:mobile,
@@ -170,8 +170,8 @@
                 if(result.code == 200){
                     $(".malog").show();
                     setTimeout(function(){
-                        window.location.href = 'use_center';
-                    },1000)
+                        window.location.href = 'use_center_order?userName=${user}';
+                    },3000)
                 }else{
                     alert(data.msg);
                 }

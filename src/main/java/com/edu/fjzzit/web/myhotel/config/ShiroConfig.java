@@ -33,7 +33,7 @@ public class ShiroConfig {
         shiroFilterFactoryBean.setSecurityManager(securityManager); //设置安全管理器
 
         shiroFilterFactoryBean.setSuccessUrl("/admin/main");
-        shiroFilterFactoryBean.setLoginUrl("/admin/login");
+        shiroFilterFactoryBean.setLoginUrl("/user/user_to_login");
         shiroFilterFactoryBean.setUnauthorizedUrl("/admin/error");
 
         //使用LinkedHashMap链表，实现顺序存储
@@ -49,7 +49,10 @@ public class ShiroConfig {
         filterMap.put("/user/login","anon");//设置登录模块忽视验证
         filterMap.put("/admin/login","anon");//设置登录模块忽视验证
         filterMap.put("/admin/login_list","anon");//设置登录模块忽视验证
+        filterMap.put("/user/user_to_login","anon");//设置登录模块忽视验证
+        filterMap.put("/user/user_login","anon");//设置登录模块忽视验证
         filterMap.put("/admin/logout","logout");//设置退出登录模块忽视验证
+        filterMap.put("/user/log_out","logout");//设置退出登录模块忽视验证
         filterMap.put("/static/**", "anon");
         filterMap.put("/**","authc");//所有除了登录模块的其他模块需要验证
 

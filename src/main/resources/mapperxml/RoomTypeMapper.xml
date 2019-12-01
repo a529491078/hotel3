@@ -20,6 +20,25 @@
     -->
     room_type_num, room_type_name, bed_type, floor, room_type_decs
   </sql>
+  <!--根据房间类型流水号查询房图-->
+  <select id="findRoomTypeImgByRoomTypeNum" parameterType="java.lang.Long" resultType="java.lang.String">
+    select room_type_img
+    from room_type
+    where room_type_num=#{roomTypeNum,jdbcType=BIGINT}
+  </select>
+  <!--根据房间类型名称和床型查找房间类型流水号-->
+  <select id="findRoomTypeNum" parameterType="java.lang.String" resultType="java.lang.Long">
+    select room_type_num
+    from room_type
+    where room_type_name=#{roomTypeName,jdbcType=VARCHAR}
+      and bed_type=#{bedType,jdbcType=VARCHAR}
+  </select>
+  <!--根据房间类型流水号查找房间类型名称-->
+  <select id="findRoomTypeName" parameterType="java.lang.Long" resultType="java.lang.String">
+    select room_type_name
+    from room_type
+    where  room_type_num=#{roomTypeNum,jdbcType=BIGINT}
+  </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     <!--
       WARNING - @mbggenerated

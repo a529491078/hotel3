@@ -9,6 +9,7 @@ import com.edu.fjzzit.web.myhotel.model.MyException;
 import com.edu.fjzzit.web.myhotel.service.CheckInInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -65,10 +66,14 @@ public class CheckInInfoServiceImpl implements CheckInInfoService {
                     String roomNum = "";//保存空房号
                     for (String rn : roomNumList
                     ) {
-                        if (rn != null && rn != "") {
+                        if (rn != null&&rn!="") {
                             roomNum = rn;
                             break;
                         }
+                    }
+                    if (roomNum.equals("")||roomNum==null) {//若没有空房号,抛出房满错误
+                        roomOrderDetailMapper.deleteByPrimaryKey(roomOrderNum);
+                        throw new MyException(ErrorCodeEnum.FULL_HOUSE);
                     }
                     //入住登记成功，入住状态变更->check_in_state(0->已入住,1->已退房)
                     CheckInInfoDTO checkInInfoDTO = new CheckInInfoDTO();
@@ -99,6 +104,7 @@ public class CheckInInfoServiceImpl implements CheckInInfoService {
      * @param roomNum
      */
     @Override
+    @Transactional
     public void checkOut(String roomNum) throws Exception  {
         //1.查询房号是否存在，若存在->修改room_state(0->未入住,1->已入住),否则返回房号不存在的错误异常
         Integer roomNumIsExists=roomInfoMapper.queryRoomNumIsExists(roomNum);

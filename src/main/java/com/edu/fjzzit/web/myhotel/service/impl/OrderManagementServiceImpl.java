@@ -76,7 +76,7 @@ public class OrderManagementServiceImpl implements OrderManagementService {
      */
     @Override
     @Transactional
-    @CacheEvict(value = "orderManagement")
+    @CacheEvict(value = "orderManagement",allEntries=true)
     public int delRoomOrderDetailById(Long roomOrderDetailId) {
         return roomOrderDetailMapper.deleteByPrimaryKey(roomOrderDetailId);
     }
@@ -118,7 +118,7 @@ public class OrderManagementServiceImpl implements OrderManagementService {
      */
     @Override
     @Transactional
-    @CacheEvict(value = "orderManagement")
+    @CacheEvict(value = "orderManagement",allEntries=true)
     public int updRoomOrderDetailAll(RoomOrderDetailAndRoomOrderDTO roomOrderDetailAndRoomOrderDTO) {
         return roomOrderDetailMapper.updRoomOrderDetailAll(roomOrderDetailAndRoomOrderDTO);
     }

@@ -44,6 +44,10 @@ public class AdminViewController {
         return "/view/admin/"+page;
     }
 
+    /**
+     * 登录
+     * @return
+     */
     @RequestMapping("/login_list")
     @ResponseBody
     public ResultJson adminLogin(String adminName, String adminPassword,HttpSession httpSession){
@@ -65,6 +69,10 @@ public class AdminViewController {
         return "/view/admin/main";
     }
 
+    /**
+     * 办理入住
+     * @return
+     */
     @RequestMapping("/checkIn")
     @ResponseBody
     @RequiresUser
@@ -80,6 +88,10 @@ public class AdminViewController {
         }
     }
 
+    /**
+     * 修改密码
+     * @return
+     */
     @RequestMapping("/upd_password")
     @ResponseBody
     @RequiresUser
@@ -95,6 +107,11 @@ public class AdminViewController {
             return new ResultJson("400","用户修改密码失败!",null);
         }
     }
+
+    /**
+     * 办理退房
+     * @return
+     */
     @RequestMapping("/room_check_out")
     @ResponseBody
     @RequiresUser
@@ -122,7 +139,6 @@ public class AdminViewController {
     public ResultJson calculateRoomDetailPrice(Integer roomPrice,Integer roomCount,String checkInDate,String checkOutDate){
         try{
             Integer roomDetailPrice=roomService.calculateRoomDetailPrice(roomPrice,roomCount,checkInDate,checkOutDate);
-
             return new ResultJson("200","房间总价计算成功!",roomDetailPrice);
         }catch(Exception e){
             e.printStackTrace();

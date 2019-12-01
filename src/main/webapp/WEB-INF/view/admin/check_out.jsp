@@ -63,11 +63,9 @@ $(function(){
              $.post("room_check_out",$(".check_out_form").serialize(),function (result) {
                 if(result.code==200){
                     alert(result.msg);
-                     window.location.href="main";
+                     window.location.href="check_out";
                 }else{
-                    alert(result.msg);
-                    //window.location.href="check_in";
-                    alert("跳转到预订界面")
+                    alert(result.msg+"跳转到预订界面!");
                 }
              });
          }else{

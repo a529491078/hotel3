@@ -29,8 +29,8 @@
         </c:if>
         <c:if test="${user != null }">
             <font color="red">欢迎您：${user }&nbsp;&nbsp;|&nbsp;&nbsp;</font>
-            <a href="/user/use_center">用户中心</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-            <a id="logout">注销登录</a>&nbsp;
+            <a href="/user/use_center_order?userName=${user }">用户中心</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+            <a href="log_out">注销登录</a>&nbsp;&nbsp;|&nbsp;&nbsp;
         </c:if>
     </p>
     <img src="/static/home/images/index_02.jpg" alt="" height="256px" width="1200px">
@@ -90,7 +90,8 @@
           		<input type="button" class="disable" value="满房" >
           	</c:if>
           	<c:if test="${type_price.roomState == 0 }">
-          		<input type="button" value="预订" onclick="window.location.href='/user/book_order?roomTypeId=${type_price.roomTypeNum }'" >
+          		<input type="button" value="预订" onclick="window.location.href=
+                        '/user/book_order?roomTypeId=${type_price.roomTypeNum }&userName=${user }'" >
           	</c:if>
           </td>
         </tr>
@@ -105,7 +106,7 @@
             </div>
             <nav aria-label="Page navigation" class="pull-right">
                 <ul class="pagination">
-                    <li><a href="index?pageNumber=1">首页</a></li>
+                    <li><a href="index?pageNumber=1&userName=${user }">首页</a></li>
                     <c:if test="${page.pageNumber==1}">
                         <li class="disabled">
                             <a href="#" aria-label="Previous" class="prePage">
@@ -123,10 +124,10 @@
 
                     <c:forEach begin="1" end="${page.total<5?page.total:5}" step="1" var="itemPage">
                         <c:if test="${page.pageNumber == itemPage}">
-                            <li class="active"><a href="index?pageNumber=${itemPage}">${itemPage}</a></li>
+                            <li class="active"><a href="index?pageNumber=${itemPage}&userName=${user }">${itemPage}</a></li>
                         </c:if>
                         <c:if test="${page.pageNumber != itemPage}">
-                            <li><a href="index?pageNumber=${itemPage}">${itemPage}</a></li>
+                            <li><a href="index?pageNumber=${itemPage}&userName=${user }">${itemPage}</a></li>
                         </c:if>
                     </c:forEach>
 
@@ -144,7 +145,7 @@
                             </a>
                         </li>
                     </c:if>
-                    <li><a href="index?pageNumber=${page.total}">尾页</a></li>
+                    <li><a href="index?pageNumber=${page.total}&userName=${user }'">尾页</a></li>
                 </ul>
             </nav>
         </div>
@@ -161,26 +162,6 @@ $(document).ready(function(){
 		$("#search-name").val($("#kw").val());
 		$("#search-form").submit();
 	})
-    //注销登录
-    $("#logout").click(function () {
-        $.ajax({
-            url:'log_out',
-            type:'post',
-            dataType:'json',
-            data:{},
-            success:function(result){
-                if(result.code == 200){
-                    alert(result.msg);
-                    window.location.href="user_to_login";
-                }else{
-                    alert(result.msg);
-                }
-            },
-            error:function () {
-                alert("错误异常!");
-            }
-        });
-    })
 });
 </script>
 </body>

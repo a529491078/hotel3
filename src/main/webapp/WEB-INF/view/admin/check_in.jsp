@@ -141,10 +141,9 @@ $(function(){
              $.post("checkIn",$(".add_customer_info_form").serialize(),function (result) {
                 if(result.code==200){
                     alert(result.msg+"房间号为:"+result.data);
-                     window.location.href="main";
+                     window.location.href="check_in";
                 }else{
-                    alert(result.msg);
-                    alert("跳转到预订界面");
+                    alert(result.msg+"跳转到预订界面!");
                     $("#name").val($("#add_customerName").val())
                     $("#mobile").val($("#add_customerPhone").val())
                     document.getElementById("hidden").style.display = "block";
@@ -163,6 +162,8 @@ $(function(){
         var roomTypeNum;
         var roomPrice;
         var roomPriceName;
+        var arriveDate;
+        var leaveDate;
         $(function() {
             //显示套餐名称列表
             $.post("get_roomPriceName_roomTypeNum",function (result) {
@@ -175,43 +176,43 @@ $(function(){
             });
             //显示房间总价
             $("#add_roomTypeNum").blur(function(){
+                arriveDate = $("#arriveDate").val();
+                leaveDate = $("#leaveDate").val();
+                var d1 = new Date(arriveDate.replace(/\-/g, "\/"));
+                var d2 = new Date(leaveDate.replace(/\-/g, "\/"));
+                if(arriveDate==""&&leaveDate==""){
+                    alert("时间不能为空！");
+                    return ;
+                }
+                else if(d1 >=d2)
+                {
+                    alert("开始时间不能大于结束时间！");
+                    return ;
+                }else {
                 roomTypeNum=$(this).val();
                 $.post("get_price_byTypeNum?roomTypeNum="+roomTypeNum,null,function (result) {
                     //roomTypeNum=result.roomTypeNum;
                     roomPrice=result.roomPrice;
                     roomPriceName=result.roomPriceName;
-                    var arriveDate =$("#arriveDate").val();
-                    var leaveDate = $("#leaveDate").val();
-                    if (arriveDate!=''&&leaveDate!='') {
-                        $.ajax({
-                            url:'calculate_roomDetailPrice',
-                            type:'post',
-                            dataType:'json',
-                            data:{roomPrice:result.roomPrice , checkInDate:arriveDate,
-                                checkOutDate:leaveDate,roomCount:1},
-                            success:function(result){
-                                if(result.code == 200){
-                                    $(".total").html("￥"+result.data);
-                                }else{
-                                    $(".total").html("￥")
-                                }
+                    $.ajax({
+                        url:'calculate_roomDetailPrice',
+                        type:'post',
+                        dataType:'json',
+                        data:{roomPrice:result.roomPrice , checkInDate:arriveDate,
+                            checkOutDate:leaveDate,roomCount:1},
+                        success:function(result){
+                            if(result.code == 200){
+                                $(".total").html("￥"+result.data);
+                            }else{
+                                $(".total").html("￥")
                             }
-                        });
-                    }
-                });
+                        }
+                    });
+                });}
             })
 
             //确认预定
             $("#btn_booking").click(function(){
-                var arriveDate = $("#arriveDate").val();
-                var leaveDate = $("#leaveDate").val();
-                var d1 = new Date(arriveDate.replace(/\-/g, "\/"));
-                var d2 = new Date(leaveDate.replace(/\-/g, "\/"));
-                if(arriveDate!=""&&leaveDate!=""&&d1 >=d2)
-                {
-                    alert("开始时间不能大于结束时间！");
-                    return ;
-                }
                 var name = $("#name").val();
                 if(name == ''){
                     $("#name").next("span.msg").text('请填写入住人!');

@@ -182,8 +182,8 @@
         <!--tab选项卡-->
       <ul class="tabs">
        
-       	<li><a href="../index">首页</a></li>
-        <li><a href="#order">我的订单</a></li>
+       	<li><a href="/user/index?userName=${user }">首页</a></li>
+        <li><a href="/user/use_center_order?userName=${user }">我的订单</a></li>
         <li><a href="#info">我的资料</a></li>
         <li><a href="#pwd">修改密码</a></li>
 
@@ -195,42 +195,66 @@
           <table>
             <thead>
             <tr>
-              <!--<th colspan="4">订单编号：</th>-->
-              <!--<th colspan="2" >订单时间:</th>-->
+              <th>订单编号</th>
               <th>房型图片</th>
               <th>房型</th>
               <th>入住人</th>
               <th>手机号</th>
               <th>状态</th>
+                <th>操作</th>
             </tr>
             </thead>
             <tbody>
-               <c:forEach items="${bookOrderList }" var="bookOrder">
-               <tr>
-					<c:forEach items="${roomTypeList }" var="roomType">
-						<c:if test="${roomType.id == bookOrder.roomTypeId }">
-							<td><img src="${roomType.photo }" width="100px"></td>
-							<td>${roomType.name }</td>
-						</c:if>
-					</c:forEach>
-					<td>${bookOrder.name }</td>
-					<td>${bookOrder.mobile }</td>
-					<td>
-						<c:if test="${bookOrder.status == 0 }">
-			          		<font color="red">预定中</font>
-			          	</c:if>
-			          	<c:if test="${bookOrder.status == 1 }">
-			          		已入住
-			          	</c:if>
-			          	<c:if test="${bookOrder.status == 2 }">
-			          		已结算离店
-			          	</c:if>
-					</td>
-               </tr>
-               </c:forEach>
+
+                <c:choose>
+                    <c:when test="${myOrderDTOList!=null }">
+                       <c:forEach items="${myOrderDTOList}" var="myOrder">
+                           <tr>
+                               <td>${myOrder.roomOrderNum}</td>
+                               <%--JSTL的set标签，保存当前操作行的订单流水号--%>
+                               <c:set var="roomOrderNum" scope="page" value='${myOrder.roomOrderNum}'/>
+                                 <c:if test="${roomTypeImg!=''}">
+                                    <td><img src="${roomTypeImg}" width="100px"></td>
+                                 </c:if>
+                                <c:forEach items="${myOrder.roomOrderDetailDTOList}" var="orderDetail">
+                                    <td>${orderDetail.roomTypeName }</td>
+                                </c:forEach>
+                                <td>${myOrder.customerName }</td>
+                                <td>${myOrder.customerPhone }</td>
+                                <td>
+                                    <c:if test="${myOrder.roomOrderState == '0' }">
+                                        <span style="color: green;">未入住</span>
+                                    </c:if>
+                                    <c:if test="${myOrder.roomOrderState =='1' }">
+                                        <span style="color: red;">已入住</span>
+                                    </c:if>
+                                    <c:if test="${myOrder.roomOrderState =='2' }">
+                                        <span style="color: red;">已取消</span>
+                                    </c:if>
+                                </td>
+                               <td>
+                                   <c:if test="${myOrder.roomOrderState == '0' }">
+                                       <button type="button" class="cancelOrder" style="background-color: ghostwhite;color: #625C5B;
+                                       border-radius: 8px;" value="${roomOrderNum}">取消订单</button>
+                                   </c:if>
+                                   <c:if test="${myOrder.roomOrderState !='0' }">
+                                     <span style="color: darkgrey;">不可取消</span>
+                                   </c:if>
+                               </td>
+                           </tr>
+                       </c:forEach>
+                    </c:when>
+                    <c:otherwise>
+                        <tr style="line-height: 50px;">
+                            <td colspan="10"><span style="color: green; font-size: 18px;">您当前暂无订单信息!是否前往
+                                <a href="/user/index?userName=${user }" style="color: darkred; font-size: 20px;">预定</a> ?</span></td>
+                        </tr>
+                    </c:otherwise>
+                </c:choose>
+
             </tbody>
           </table>
-          
+
         </div>
 
             <%--我的资料模块--%>
@@ -291,52 +315,75 @@
     <script src="/static/home/js/jquery-1.11.3.js"></script>
 
  <script>
+     //确认取消订单
+     $(".cancelOrder").click(function () {
+         var result=confirm("确认取消该订单?");
+         if (result){
+             //获取当前操作行的订单号
+             var num=$(this).val()
+             $.ajax({
+                 url:'cancel_order',
+                 type:'post',
+                 dataType:'json',
+                 data:{orderNum:num},
+                 success:function(result){
+                     if(result.code == 200){
+                         alert(result.msg)
+                         window.location.href = 'use_center_order?userName=${user}';
+                     }else{
+                         alert(result.msg)
+                     }
+                 }
+             })
+         }
+     });
+    //侧边栏切换
 	$(".tabs").on("click","li a",function(){
-    $(this).addClass("active").parents().siblings().children(".active").removeClass("active");
-    var href=$(this).attr("href");
-    href=href.slice(1);
-    var $div=$("div.content>div."+href);
-     $div.show().siblings().hide();
-    //修改个人信息
-     $("#update-info-btn").click(function(){
-    	$.ajax({
-    		url:'update_info',
-    		type:'post',
-    		dataType:'json',
-    		data:$("#update-info-form").serialize(),
-    		success:function(data){
-    			alert(data.msg);
-    		}
-    	});
+        $(this).addClass("active").parents().siblings().children(".active").removeClass("active");
+        var href=$(this).attr("href");//获取href内容->#info
+        href=href.slice(1);//截取内容->info
+        var $div=$("div.content>div."+href);
+         $div.show().siblings().hide();
+        //修改个人信息
+         $("#update-info-btn").click(function(){
+            $.ajax({
+                url:'update_info',
+                type:'post',
+                dataType:'json',
+                data:$("#update-info-form").serialize(),
+                success:function(data){
+                    alert(data.msg);
+                }
+            });
+        });
+        //修改密码
+        $("#update-password-btn").click(function(){
+            var oldPassword = $("#old-password").val();
+            var newPassword = $("#new-password").val();
+            var renewPassword = $("#renew-password").val();
+            if(oldPassword == ''){
+                alert('请填写原密码！');
+                return;
+            }
+            if(newPassword == ''){
+                alert('请填写新密码！');
+                return;
+            }
+            if(newPassword != renewPassword){
+                alert('两次密码不一致！');
+                return;
+            }
+            $.ajax({
+                url:'update_pwd',
+                type:'post',
+                dataType:'json',
+                data:{oldPassword:oldPassword,newPassword:newPassword},
+                success:function(data){
+                    alert(data.msg)
+                }
+            });
+        });
     });
-    //修改密码
-    $("#update-password-btn").click(function(){
-    	var oldPassword = $("#old-password").val();
-    	var newPassword = $("#new-password").val();
-    	var renewPassword = $("#renew-password").val();
-    	if(oldPassword == ''){
-    		alert('请填写原密码！');
-    		return;
-    	}
-    	if(newPassword == ''){
-    		alert('请填写新密码！');
-    		return;
-    	}
-    	if(newPassword != renewPassword){
-    		alert('两次密码不一致！');
-    		return;
-    	}
-    	$.ajax({
-    		url:'update_pwd',
-    		type:'post',
-    		dataType:'json',
-    		data:{oldPassword:oldPassword,newPassword:newPassword},
-    		success:function(data){
-    			alert(data.msg)
-    		}
-    	});
-    });
-});
 	
 </script>
     

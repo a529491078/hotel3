@@ -143,11 +143,10 @@
     });
     //删除
     $(".order_delete_btn").click(function () {
-        var delRoomOrderDetailNum = $(this).parent().parent().find("td:eq(0)").text();
-        var delOrderId = $(this).parent().parent().find("td:eq(1)").text();
+        var delRoomOrderNum = $(this).parent().parent().find("td:eq(0)").text();
         var pageNumber = ${page.pageNumber};
-        if (confirm("确认删除订单编号为【"+ delOrderId +"】的信息吗？")){
-        	$.post("del_room_order_byid?roomOrderDetailNum="+delRoomOrderDetailNum,function(result){
+        if (confirm("确认删除订单编号为【"+ delRoomOrderNum +"】的信息吗？")){
+        	$.post("del_room_order_byid?roomOrderDetailNum="+delRoomOrderNum,function(result){
         		 if (result.code == 200){
                      alert(result.msg);
                      window.location.href="get_room_order_page?pageNumber="+pageNumber;

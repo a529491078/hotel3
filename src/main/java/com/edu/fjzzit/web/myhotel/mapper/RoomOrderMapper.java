@@ -1,8 +1,11 @@
 package com.edu.fjzzit.web.myhotel.mapper;
 
+import com.edu.fjzzit.web.myhotel.dto.RoomOrderDTO;
 import com.edu.fjzzit.web.myhotel.model.RoomOrder;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 @Mapper
 public interface RoomOrderMapper {
@@ -13,6 +16,12 @@ public interface RoomOrderMapper {
      * @return
      */
     Long selectRoomOrderNumByCustomerName(@Param("customerName") String customerName);
+
+    /**
+     * 查找客户订单信息
+     * @return
+     */
+    List<RoomOrder> findRoomOrderByCustomerName(@Param("customerName") String customerName);
 
     /**
      * 更新订单状态

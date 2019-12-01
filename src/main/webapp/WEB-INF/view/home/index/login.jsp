@@ -50,7 +50,7 @@
 				 </div>
 				
 				 <div class="log" id="bt_login" style="margin-top:25px;cursor:pointer;">登 录</div>
-			     
+
 			</div>
 			<div class="reg">
 			   <a href="reg">立即注册 &gt;&gt;</a>

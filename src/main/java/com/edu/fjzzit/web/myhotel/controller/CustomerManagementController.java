@@ -4,11 +4,12 @@ import com.edu.fjzzit.web.myhotel.config.ResultJson;
 import com.edu.fjzzit.web.myhotel.model.CustomerInfo;
 import com.edu.fjzzit.web.myhotel.model.Page;
 import com.edu.fjzzit.web.myhotel.service.CustomerManagementService;
+import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.apache.shiro.authz.annotation.RequiresUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -18,6 +19,7 @@ public class CustomerManagementController {
     private CustomerManagementService customerManagementService;
 
     @RequestMapping("/get_customer_info_page")
+    @RequiresRoles(value={"admin","manager"},logical = Logical.OR)
     public ModelAndView findCustomerInfoAll(@RequestParam(defaultValue="1")Integer pageNumber, @RequestParam(defaultValue="5")Integer pageSize){
         try {
             Page customerInfoAll = customerManagementService.findCustomerInfoAll(pageNumber, pageSize);
@@ -33,6 +35,7 @@ public class CustomerManagementController {
 
     @RequestMapping("/del_customer_info_byid")
     @ResponseBody
+    @RequiresRoles(value={"admin","manager"},logical = Logical.OR)
     public ResultJson delCustomerInfoById(Long customerNum) {
         try {
             customerManagementService.delCustomerInfoById(customerNum);
@@ -43,6 +46,7 @@ public class CustomerManagementController {
         }
     }
     @RequestMapping("/get_customer_info_byid")
+    @RequiresRoles(value={"admin","manager"},logical = Logical.OR)
     public ModelAndView findCustomerInfoById(Long customerNum){
         try{
             CustomerInfo customerInfoById = customerManagementService.findCustomerInfoById(customerNum);
@@ -57,6 +61,7 @@ public class CustomerManagementController {
     }
     @RequestMapping("/get_not_customer_info_byid")
     @ResponseBody
+    @RequiresRoles(value={"admin","manager"},logical = Logical.OR)
     public ResultJson findNotCustomerInfoById(String customerNickName){
         try{
             Long i = customerManagementService.findNotCustomerInfoById(customerNickName);
@@ -72,6 +77,7 @@ public class CustomerManagementController {
     }
     @RequestMapping("/upd_customer_info_byid")
     @ResponseBody
+    @RequiresRoles(value={"admin","manager"},logical = Logical.OR)
     public ResultJson updCustomerInfoAll(CustomerInfo customerInfo){
         try{
             customerManagementService.updCustomerInfoAll(customerInfo);
@@ -83,6 +89,7 @@ public class CustomerManagementController {
     }
     @RequestMapping("/ins_customer_info")
     @ResponseBody
+    @RequiresRoles(value={"admin","manager"},logical = Logical.OR)
     public ResultJson insCustomerInfo(CustomerInfo customerInfo){
         try{
             customerManagementService.insCustomerInfo(customerInfo);
@@ -91,5 +98,10 @@ public class CustomerManagementController {
             e.printStackTrace();
             return new ResultJson("400","添加失败!",null);
         }
+    }
+    @RequiresUser
+    @ExceptionHandler(value = {org.apache.shiro.authz.AuthorizationException.class})
+    public String authorizationExceptionHandler(Exception e) {
+        return "view/admin/error";
     }
 }

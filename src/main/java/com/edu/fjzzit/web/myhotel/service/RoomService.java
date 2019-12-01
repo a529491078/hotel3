@@ -54,5 +54,5 @@ public interface RoomService {
      * @param checkOutDate
      * @return
      */
-    Integer calculateRoomDetailPrice(Integer roomPrice,Integer roomCount,String checkInDate,String checkOutDate);
+    Integer calculateRoomDetailPrice(Integer roomPrice, Integer roomCount, String checkInDate, String checkOutDate);
 }

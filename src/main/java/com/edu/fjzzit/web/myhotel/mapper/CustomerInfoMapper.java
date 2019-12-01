@@ -34,20 +34,20 @@ public interface CustomerInfoMapper {
      * @param customerNickName
      * @return
      */
-    Long queryCouldByCustomerNickName(@Param("customerNickName")String customerNickName);
+    Long queryCouldByCustomerNickName(@Param("customerNickName") String customerNickName);
 
     /**
      * 删除顾客信息
      * @param customerNum 主键
      * @return
      */
-    int deleteByPrimaryKey(@Param("customerNum")Long customerNum);
+    int deleteByPrimaryKey(@Param("customerNum") Long customerNum);
     /**
      * 根据主键查询顾客信息
      * @param customerNum 主键
      * @return
      */
-    CustomerInfo selectByPrimaryKey(@Param("customerNum")Long customerNum);
+    CustomerInfo selectByPrimaryKey(@Param("customerNum") Long customerNum);
     /**
      * 修改顾客信息
      * @param customerInfo 顾客信息

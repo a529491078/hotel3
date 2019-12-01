@@ -6,15 +6,20 @@ import com.edu.fjzzit.web.myhotel.dto.RoomTypeAndRoomPriceDTO;
 import com.edu.fjzzit.web.myhotel.model.Page;
 import com.edu.fjzzit.web.myhotel.model.RoomInfo;
 import com.edu.fjzzit.web.myhotel.service.RoomManagementService;
-import org.apache.ibatis.annotations.Param;
+import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.apache.shiro.authz.annotation.RequiresUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.ClassUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.nio.channels.MulticastChannel;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/admin")
@@ -23,6 +28,7 @@ public class RoomManagementController {
     private RoomManagementService roomManagementService;
 
     @RequestMapping("/get_room_info_page")
+    @RequiresRoles(value={"admin"},logical = Logical.OR)
     public ModelAndView fingRoomInfoAllByPage(@RequestParam(defaultValue="1")Integer pageNumber, @RequestParam(defaultValue="5")Integer pageSize){
         try{
             Page page = roomManagementService.findRoomInfoAll(pageNumber, pageSize);
@@ -36,6 +42,7 @@ public class RoomManagementController {
     }
 
     @RequestMapping("/get_room_type_price_page")
+    @RequiresRoles(value={"admin"},logical = Logical.OR)
     public ModelAndView findRoomTypeAndRoomPriceAll(@RequestParam(defaultValue="1")Integer pageNumber, @RequestParam(defaultValue="5")Integer pageSize){
         try{
             Page page = roomManagementService.findRoomTypeAndRoomPriceAll(pageNumber,pageSize);
@@ -50,6 +57,7 @@ public class RoomManagementController {
 
     @RequestMapping("/get_roomPriceName_roomTypeNum")
     @ResponseBody
+    @RequiresUser
     public List<RoomPriceNameAndRoomTypeNumDTO> findRoomPriceNameAll(){
         List<RoomPriceNameAndRoomTypeNumDTO> roomPriceNameAll=null;
         try{
@@ -62,6 +70,7 @@ public class RoomManagementController {
 
     @RequestMapping("/ins_room_info")
     @ResponseBody
+    @RequiresRoles(value={"admin"},logical = Logical.OR)
     public ResultJson insRoomInfoById(RoomInfo roomInfo){
         try{
             roomManagementService.insRoomInfo(roomInfo);
@@ -72,13 +81,25 @@ public class RoomManagementController {
         }
     }
 
-    @RequestMapping("/ins_room_type_price_info")
+    @PostMapping("/ins_room_type_price_info")
     @ResponseBody
-    public ResultJson insRoomTypeAndRoomPrice(MultipartFile file, RoomTypeAndRoomPriceDTO roomTypeAndRoomPriceDTO){
+    @RequiresRoles(value={"admin"},logical = Logical.OR)
+    public ResultJson insRoomTypeAndRoomPrice(MultipartFile file_img,RoomTypeAndRoomPriceDTO roomTypeAndRoomPriceDTO){
         try{
-            //roomManagementService.insRoomTypeAndRoomPrice(roomTypeAndRoomPriceDTO);
-            System.out.println(file.getOriginalFilename());
-            System.out.println(roomTypeAndRoomPriceDTO);
+                String uuto =UUID.randomUUID().toString()+file_img.getOriginalFilename().substring(file_img.getOriginalFilename().lastIndexOf("."));
+                String fileName ="/static/admin/login/upload/"+uuto;
+                String classPath = ClassUtils.getDefaultClassLoader().getResource("static/admin/login/upload/").getPath()+uuto;
+                InputStream is = file_img.getInputStream();
+                FileOutputStream fos = new FileOutputStream(classPath);
+                byte b[] = new byte[1024 * 1024];
+                int length = 0;
+                while (-1 != (length = is.read(b))) {
+                    fos.write(b, 0, length);
+                    fos.flush();
+                    fos.close();
+            }
+            roomTypeAndRoomPriceDTO.setRoomTypeImg(fileName);
+            roomManagementService.insRoomTypeAndRoomPrice(roomTypeAndRoomPriceDTO);
             return new ResultJson("200","添加成功!",null);
         }catch(Exception e){
             e.printStackTrace();
@@ -87,6 +108,7 @@ public class RoomManagementController {
     }
     @RequestMapping("/get_room_info_byid")
     @ResponseBody
+    @RequiresRoles(value={"admin"},logical = Logical.OR)
     public ResultJson findRoomInfoById(Integer roomId){
         try{
             RoomInfo roomInfoById = roomManagementService.findRoomInfoById(roomId);
@@ -98,6 +120,7 @@ public class RoomManagementController {
     }
 
     @RequestMapping("/get_upd_room_info_byid")
+    @RequiresRoles(value={"admin"},logical = Logical.OR)
     public ModelAndView findUpdRoomInfoById(Integer roomId){
         try{
             RoomInfo roomInfoById = roomManagementService.findRoomInfoById(roomId);
@@ -118,6 +141,7 @@ public class RoomManagementController {
      */
     @RequestMapping("/get_not_room_id_byid")
     @ResponseBody
+    @RequiresRoles(value={"admin"},logical = Logical.OR)
     public ResultJson findNotRoomIdById(String roomNum,String buildingNum){
         try{
             int notRoomIdById = roomManagementService.findNotRoomIdById(roomNum,buildingNum);
@@ -133,6 +157,7 @@ public class RoomManagementController {
     }
 
     @RequestMapping("/get_upd_room_type_price_byid")
+    @RequiresRoles(value={"admin"},logical = Logical.OR)
     public ModelAndView findRoomTypeAndRoomPriceById(Long roomTypeNum){
         try{
             RoomTypeAndRoomPriceDTO roomTypeAndRoomPriceById = roomManagementService.findRoomTypeAndRoomPriceById(roomTypeNum);
@@ -150,6 +175,7 @@ public class RoomManagementController {
 
     @RequestMapping("/upd_room_info_byid")
     @ResponseBody
+    @RequiresRoles(value={"admin"},logical = Logical.OR)
     public ResultJson updRoomInfoAll(RoomInfo roomInfo){
         try{
             roomManagementService.updRoomInfoAll(roomInfo);
@@ -162,10 +188,28 @@ public class RoomManagementController {
 
     @RequestMapping("/upd_room_type_price_byid")
     @ResponseBody
-    public ResultJson updRoomTypeAndRoomPriceAll(RoomTypeAndRoomPriceDTO roomTypeAndRoomPriceDTO){
+    @RequiresRoles(value={"admin"},logical = Logical.OR)
+    public ResultJson updRoomTypeAndRoomPriceAll(MultipartFile file_img,RoomTypeAndRoomPriceDTO roomTypeAndRoomPriceDTO){
         try{
-            roomManagementService.updRoomTypeAndRoomPriceAll(roomTypeAndRoomPriceDTO);
-            return new ResultJson("200","修改成功!",null);
+            if (file_img!=null) {
+                String uuto = UUID.randomUUID().toString() + file_img.getOriginalFilename().substring(file_img.getOriginalFilename().lastIndexOf("."));
+                //数据库保存路径
+                String fileName = "/static/admin/login/upload/" + uuto;
+                //classPath路径
+                String classPath = ClassUtils.getDefaultClassLoader().getResource("static/admin/login/upload/").getPath() + uuto;
+                InputStream is = file_img.getInputStream();
+                FileOutputStream fos = new FileOutputStream(classPath);
+                byte b[] = new byte[1024 * 1024];
+                int length = 0;
+                while (-1 != (length = is.read(b))) {
+                    fos.write(b, 0, length);
+                    fos.flush();
+                    fos.close();
+                }
+                roomTypeAndRoomPriceDTO.setRoomTypeImg(fileName);
+            }
+                roomManagementService.updRoomTypeAndRoomPriceAll(roomTypeAndRoomPriceDTO);
+                return new ResultJson("200", "修改成功!", null);
         }catch(Exception e){
             e.printStackTrace();
             return new ResultJson("400","修改失败!",null);
@@ -174,6 +218,7 @@ public class RoomManagementController {
 
     @PostMapping("/del_room_info_byid")
     @ResponseBody
+    @RequiresRoles(value={"admin"},logical = Logical.OR)
     public ResultJson delRoomInfoById(Integer roomId){
         try{
             roomManagementService.delRoomInfoById(roomId);
@@ -186,6 +231,7 @@ public class RoomManagementController {
 
     @RequestMapping("/del_room_type_price_byid")
     @ResponseBody
+    @RequiresRoles(value={"admin"},logical = Logical.OR)
     public ResultJson delRoomTypeAndRoomPriceById(Long roomTypeNum){
         try{
             roomManagementService.delRoomTypeAndRoomPriceById(roomTypeNum);
@@ -194,5 +240,11 @@ public class RoomManagementController {
             e.printStackTrace();
             return new ResultJson("400","删除失败!",null);
         }
+    }
+
+    @RequiresUser
+    @ExceptionHandler(value = {org.apache.shiro.authz.AuthorizationException.class})
+    public String authorizationExceptionHandler(Exception e) {
+        return "view/admin/error";
     }
 }

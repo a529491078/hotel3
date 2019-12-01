@@ -1,71 +1,97 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<!DOCTYPE html>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="copyright" content="All Rights Reserved, Copyright (C) 2013, 猿来入此, Ltd." />
-<title></title>
-<link rel="stylesheet" type="text/css" href="../resources/admin/easyui/easyui/1.3.4/themes/default/easyui.css" />
-<link rel="stylesheet" type="text/css" href="../resources/admin/easyui/css/wu.css" />
-<link rel="stylesheet" type="text/css" href="../resources/admin/easyui/css/icon.css" />
-<script type="text/javascript" src="../resources/admin/easyui/js/jquery-1.8.0.min.js"></script>
-<script type="text/javascript" src="../resources/admin/easyui/easyui/1.3.4/jquery.easyui.min.js"></script>
-<script type="text/javascript" src="../resources/admin/easyui/easyui/1.3.4/locale/easyui-lang-zh_CN.js"></script>
-<body class="easyui-layout">
+    <title>客房修改</title>
+</head>
+<body>
+<!-- 导航栏-->
+<%@ include file="/WEB-INF/commom/head.jsp"%>
 
-<!-- 修改密码窗口 -->
-<div id="edit-dialog" class="easyui-dialog" data-options="closed:false,iconCls:'icon-save',modal:true,title:'修改密码',buttons:[{text:'确认修改',iconCls: 'icon-ok',handler:submitEdit}]" style="width:450px; padding:10px;">
-	<form id="edit-form" method="post">
-        <table>
-           <tr>
-                <td width="60" align="right">用户名:</td>
-                <td><input type="text" name="username" class="wu-text easyui-validatebox" readonly="readonly" value="${admin.username }" /></td>
-            </tr>
-            <tr>
-                <td width="60" align="right">原密码:</td>
-                <td><input type="password" id="oldPassword" class="wu-text easyui-validatebox" data-options="required:true, missingMessage:'请填写密码'" /></td>
-            </tr>
-            <tr>
-                <td width="60" align="right">新密码:</td>
-                <td><input type="password" id="newPassword" class="wu-text easyui-validatebox" data-options="required:true, missingMessage:'请填写密码'" /></td>
-            </tr>
-            <tr>
-                <td width="60" align="right">重复新密码:</td>
-                <td><input type="password" id="reNewPassword" class="wu-text easyui-validatebox" data-options="required:true, missingMessage:'请填写密码'" /></td>
-            </tr>
-        </table>
-    </form>
-</div>
+<!-- 中间部分（左侧栏+表格内容） -->
+<div class="hrms_dept_body">
+    <!-- 左侧栏 -->
+    <%@ include file="/WEB-INF/commom/leftsidebar.jsp"%>
 
-</body>
+    <!-- 部门表格内容 -->
+    <div class="dept_info col-sm-10">
+        <div class="panel panel-success">
+            <!-- 路径导航 -->
+            <div class="panel-heading">
+                <ol class="breadcrumb">
+                    <li><a href="#">修改信息</a></li>
+                    <li class="active">修改管理员密码</li>
+                </ol>
+            </div>
+            <div class="modal-header">
+                <h4 class="modal-title">修改密码</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal upd_pass_form" onsubmit="return false">
+                        <div class="form-group">
+                            <input type="hidden" name="id" th:field="${adminId}" />
+                            <div class="col-sm-8">
+                                用户名<input type="text" name="username" class="form-control"
+                                          id="upd_name" value="${admin }"> <span></span>
+                            </div>
+                            <div class="col-sm-8">
+                                原密码<input type="password" name="oldPwd" class="form-control"
+                                         id="upd_pass"><span></span>
+                            </div>
+                            <div class="col-sm-8">
+                                新密码<input type="password" name="newPass" class="form-control"
+                                         id="upd_new_pass"><span></span>
+                            </div>
+                            <div class="col-sm-8">
+                                重复新密码<input type="password" name="password" class="form-control"
+                                         id="upd_new_pass2"><span></span>
+                            </div>
+                            <br><br><br><br><br>
+                        </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" onclick="javascript:history.back(-1);">关闭</button>
+                <button type="button" class="btn btn-default pass_save_btn">保存</button>
+            </div>
+        </div><!-- /.panel panel-success -->
+    </div><!-- /.dept_info -->
+</div><!-- /.hrms_dept_body -->
 
-<!-- End of easyui-dialog -->
+<!-- 尾部-->
+<%@ include file="/WEB-INF/commom/foot.jsp"%>
 <script type="text/javascript">
-	function submitEdit(){
-		var validate = $("#edit-form").form("validate");
-		if(!validate){
-			$.messager.alert("消息提醒","请检查你输入的数据!","warning");
-			return;
-		}
-		if($("#newPassword").val() != $("#reNewPassword").val()){
-			$.messager.alert("消息提醒","两次密码输入不一致!","warning");
-			return;
-		}
-		$.ajax({
-			url:'edit_password',
-			type:'post',
-			data:{newpassword:$("#newPassword").val(),oldpassword:$("#oldPassword").val()},
-			dataType:'json',
-			success:function(data){
-				if(data.type == 'success'){
-					$.messager.alert("消息提醒","密码修改成功!","warning");
-				}else{
-					$.messager.alert("消息提醒",data.msg,"warning");
-				}
-			}
-		})
-	}
-	
-	
+$(function(){
+	//判断第二次密码是否相同
+	var upd_new_pass=false;
+    //第二次密码框失去焦点时
+    $("#upd_new_pass2").blur(function(){
+        if($(this).val()!=$("#upd_new_pass").val()){
+            $(this).next().css("color","red").html("两次输入的密码不一致");
+            upd_new_pass = false;
+        }else{
+            $(this).next().css("color","green").html("√");
+            upd_new_pass = true;
+        }
+    });
+	 //单击保存时
+	 $(".pass_save_btn").click(function(){
+        if(upd_new_pass==true){
+             $.post("upd_password",$(".upd_pass_form").serialize(),function (result) {
+                if(result.code==200){
+                    alert(result.msg);
+                     window.location.href="main";
+                }else{
+                    alert(result.msg);
+                    window.location.href="edit_password";
+                }
+             });
+         }else{
+             alert("请添加完整信息");
+             return false;
+         }
+	 });
+})
 </script>
+</body>
+</html>

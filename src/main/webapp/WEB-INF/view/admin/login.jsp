@@ -86,7 +86,7 @@
 					success:function(result){
 						if(result.code == 200){
 							alert(result.msg);
-							window.location.href="get_main?adminName="+username;
+							window.location.href="get_main";
 						}else{
 							removeClass(document.querySelector(".login"), "active");
 							removeClass(document.querySelector(".sk-rotating-plane"), "active");

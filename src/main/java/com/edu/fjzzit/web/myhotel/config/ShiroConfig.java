@@ -9,6 +9,7 @@ import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -31,8 +32,9 @@ public class ShiroConfig {
 
         shiroFilterFactoryBean.setSecurityManager(securityManager); //设置安全管理器
 
-        shiroFilterFactoryBean.setLoginUrl("/user/need_login");
-        shiroFilterFactoryBean.setUnauthorizedUrl("/user/unauth");
+        shiroFilterFactoryBean.setSuccessUrl("/admin/main");
+        shiroFilterFactoryBean.setLoginUrl("/admin/login");
+        shiroFilterFactoryBean.setUnauthorizedUrl("/admin/error");
 
         //使用LinkedHashMap链表，实现顺序存储
         LinkedHashMap<String,String> filterMap=new LinkedHashMap<>();
@@ -47,8 +49,9 @@ public class ShiroConfig {
         filterMap.put("/user/login","anon");//设置登录模块忽视验证
         filterMap.put("/admin/login","anon");//设置登录模块忽视验证
         filterMap.put("/admin/login_list","anon");//设置登录模块忽视验证
+        filterMap.put("/admin/logout","logout");//设置退出登录模块忽视验证
         filterMap.put("/static/**", "anon");
-        //filterMap.put("/**","authc");//所有除了登录模块的其他模块需要验证
+        filterMap.put("/**","authc");//所有除了登录模块的其他模块需要验证
 
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterMap);
 
@@ -97,8 +100,10 @@ public class ShiroConfig {
 
     @Bean
     public SessionManager sessionManager(){
-        MySessionManager sessionManager=new MySessionManager();
-        sessionManager.setGlobalSessionTimeout(300000);
+//        MySessionManager sessionManager=new MySessionManager();
+//        sessionManager.setGlobalSessionTimeout(300000);
+//        return sessionManager;
+        SessionManager sessionManager = new DefaultWebSessionManager();
         return sessionManager;
     }
 

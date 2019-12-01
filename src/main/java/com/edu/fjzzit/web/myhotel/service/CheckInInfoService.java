@@ -10,7 +10,7 @@ public interface CheckInInfoService {
      * @param customerID
      * @return 返回房间号
      */
-    String checkIn(String customerName,String customerPhone,String customerID) throws Exception ;
+    String checkIn(String customerName, String customerPhone, String customerID) throws Exception ;
 
     /**
      * 办理退房

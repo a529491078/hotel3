@@ -19,7 +19,7 @@ public interface RoomInfoMapper {
      * @return
      */
     List<String> selectRoomNumByRoomTypeNum(@Param("roomTypeNum") Long roomTypeNum,
-                                             @Param("roomState") Integer roomState);
+                                            @Param("roomState") Integer roomState);
 
     /**
      * 更新房间状态(0->未入住,1->已入住)
@@ -27,7 +27,7 @@ public interface RoomInfoMapper {
      * @param roomState
      * @return
      */
-    int updateRoomStateByRoomNum(@Param("roomNum") String roomNum,@Param("roomState") Integer roomState);
+    int updateRoomStateByRoomNum(@Param("roomNum") String roomNum, @Param("roomState") Integer roomState);
 
     /**
      * 查询房间号是否存在
@@ -42,7 +42,7 @@ public interface RoomInfoMapper {
      * @param buildingNum
      * @return
      */
-    int queryRoomNumByRoomNumAndBuildingNum(@Param("roomNum") String roomNum,@Param("buildingNum") String buildingNum);
+    int queryRoomNumByRoomNumAndBuildingNum(@Param("roomNum") String roomNum, @Param("buildingNum") String buildingNum);
 
     /**
      * 分页查询客房信息
@@ -50,7 +50,7 @@ public interface RoomInfoMapper {
      * @param pageSize
      * @return
      */
-    List<RoomInfo> findRoomInfoAll(@Param("pageStart") int pageStart, @Param("pageSize")int pageSize);
+    List<RoomInfo> findRoomInfoAll(@Param("pageStart") int pageStart, @Param("pageSize") int pageSize);
 
     /**
      * 分页查询客房套餐信息

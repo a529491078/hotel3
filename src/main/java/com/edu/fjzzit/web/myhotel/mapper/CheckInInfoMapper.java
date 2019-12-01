@@ -13,7 +13,7 @@ public interface CheckInInfoMapper {
      * @param roomState
      * @return
      */
-    int updateCheckInStateByRoomNum(@Param("roomNum") String roomNum,@Param("roomState") Integer roomState);
+    int updateCheckInStateByRoomNum(@Param("roomNum") String roomNum, @Param("roomState") Integer roomState);
 
     /**
      * 查询是否有预定房间

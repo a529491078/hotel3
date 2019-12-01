@@ -64,7 +64,7 @@ public interface UserInfoMapper {
      * @param password
      * @return
      */
-    int updateSelfPassword(@Param("userId") Integer userId,@Param("password") String password);
+    int updateSelfPassword(@Param("userId") Integer userId, @Param("password") String password);
 
     /**
      * 重置密码(管理员)
@@ -72,7 +72,7 @@ public interface UserInfoMapper {
      * @param password
      * @return
      */
-    int updatePassword(@Param("userId") Integer userId,@Param("password") String password,@Param("salt") String salt);
+    int updatePassword(@Param("userId") Integer userId, @Param("password") String password, @Param("salt") String salt);
 
     /**
      * 设置用户状态(管理员)
@@ -80,7 +80,7 @@ public interface UserInfoMapper {
      * @param userState
      * @return
      */
-    int setAccountState(@Param("userId") Integer userId,@Param("userState") Integer userState);
+    int setAccountState(@Param("userId") Integer userId, @Param("userState") Integer userState);
 
     /**
      * 设置用户角色(管理员)
@@ -88,6 +88,6 @@ public interface UserInfoMapper {
      * @param roleId
      * @return
      */
-    int updateRoles(@Param("userId") Integer userId,@Param("roleId") Integer roleId);
+    int updateRoles(@Param("userId") Integer userId, @Param("roleId") Integer roleId);
 
 }

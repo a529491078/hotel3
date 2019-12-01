@@ -44,6 +44,14 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label  class="col-sm-2 control-label">详图</label>
+                        <div class="col-sm-8">
+                            <img src="${roomTypePrice.roomTypeImg}" WIDTH="100" HEIGHT="100">
+                            <input type="file" name="file_img" id="add_roomTypeImg">
+                            <span  class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label  class="col-sm-2 control-label">楼层</label>
                         <div class="col-sm-8">
                             <input type="text" name="floor" class="form-control" id="upd_floor" value="${roomTypePrice.floor}">
@@ -117,16 +125,6 @@ $(function(){
              roomTypeName = true;
 			}
 	 });
-    //套餐价格框失去焦点时
-	 $("#upd_roomPrice").blur(function(){
-         if(!$(this).val().match(/^[1-9]\d{0,2}$/)){
-             $(this).next().css("color","red").html("X");
-             roomPrice = false;
-         }else{
-             $(this).next().css("color","green").html("√");
-             roomPrice = true;
-         }
-	 });
     //早餐类型框失去焦点时
 	 $("#upd_breakfastType").blur(function(){
 		 if($(this).val()== ''){
@@ -177,24 +175,46 @@ $(function(){
              roomPriceName = true;
 			}
 	 });
+    //套餐价格框失去焦点时
+    $("#upd_roomPrice").blur(function(){
+        if(!$(this).val().match(/^[1-9]\d{0,2}$/)){
+            $(this).next().css("color","red").html("X");
+            roomPrice = false;
+        }else{
+            $(this).next().css("color","green").html("√");
+            roomPrice = true;
+        }
+    });
 	 //单击保存时
 	 $(".roomTypePrice_save_btn").click(function(){
         if(bedType==true&&breakfastType==true&&floor==true&&roomPrice==true
             &&roomPriceName==true&&roomTypeDecs==true&&roomTypeName){
-             $.post("upd_room_type_price_byid",$(".upd_room_type_price_form").serialize(),function (result) {
-                if(result.code==200){
-                    alert(result.msg);
-                     window.location.href="get_room_type_price_page";
-                }else{
-                    alert(result.msg);
-                    window.location.href="edit_room_type_price";
+            var formData=new FormData();
+            formData.append("file_img",$('#add_roomTypeImg').prop('files')[0]);
+            formData.append('type',"multipart/form-data");
+            $.ajax({
+                type: 'POST',
+                url: 'upd_room_type_price_byid?'+$(".upd_room_type_price_form").serialize(),
+                data:formData,
+                contentType: false,// 注意：让jQuery不要处理数据
+                processData: false,// 注意：让jQuery不要设置contentType
+                success: function (result) {
+                    if (result.code == 200) {
+                        alert(result.msg);
+                        window.location.href = "get_room_type_price_page";
+                    } else {
+                        alert(result.msg);
+                        window.location.href = "edit_room_type_price";
+                    }
+                }, error: function (mag) {
+                    alert("上传失败，请重试");
                 }
-             });
-         }else{
-             alert("请添加完整信息");
-             return false;
-         }
-	 });
+            });
+        }else{
+            alert("请添加完整信息");
+            return false;
+        }
+     });
 })
 </script>
 </body>

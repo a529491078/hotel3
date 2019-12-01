@@ -56,7 +56,7 @@ public interface RoomManagementService {
      * @param roomId 主键
      * @return 房间号
      */
-    int findNotRoomIdById(String roomId,String buildingNum);
+    int findNotRoomIdById(String roomId, String buildingNum);
 
     /**
      * 修改客房信息

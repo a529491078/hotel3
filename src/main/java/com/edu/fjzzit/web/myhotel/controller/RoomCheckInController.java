@@ -11,6 +11,7 @@ import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -41,25 +42,6 @@ public class RoomCheckInController {
             return new ResultJson(e.getErrorCode(),e.getDescription(),null);
         }catch(Exception e){
             return new ResultJson("400","入住登记失败!",null);
-        }
-    }
-
-    @PostMapping("/room_check_out")
-    @ApiOperation("办理退房")
-    @RequiresAuthentication
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "token",value = "鉴权Token",dataType = "string",required = true,paramType = "header"),
-            @ApiImplicitParam(name = "roomNum",value = "房间号",dataType = "string",required = true),
-    })
-    public ResultJson roomCheckOut(String roomNum){
-        try{
-            //输入房号，办理退房
-            checkInInfoService.checkOut(roomNum);
-            return new ResultJson("200",roomNum+"->办理退房成功!",null);
-        }catch(MyException e){
-            return new ResultJson(e.getErrorCode(),e.getDescription(),null);
-        }catch(Exception e){
-            return new ResultJson("400",roomNum+"->办理退房失败!",null);
         }
     }
 }

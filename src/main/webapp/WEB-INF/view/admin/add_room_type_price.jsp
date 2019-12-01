@@ -3,6 +3,7 @@
 <html>
 <head>
     <title>客房套餐添加</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </head>
 <body>
 <!-- 导航栏-->
@@ -45,8 +46,7 @@
                     <div class="form-group">
                         <label  class="col-sm-2 control-label">详图</label>
                         <div class="col-sm-8">
-                            <input type="file" name="file" id="add_roomTypeImg">
-                            <span  class="help-block"></span>
+                            <input type="file" name="file_img" id="add_roomTypeImg">
                         </div>
                     </div>
                     <div class="form-group">
@@ -129,7 +129,7 @@ $(function(){
              roomTypeName = true;
 			}
 	 });
-    //套餐价格框失去焦点时
+     //套餐价格框失去焦点时
 	 $("#add_roomPrice").blur(function(){
          if(!$(this).val().match(/^[1-9]\d{0,2}$/)){
              $(this).next().css("color","red").html("X");
@@ -201,15 +201,29 @@ $(function(){
 	 $(".roomTypePrice_save_btn").click(function(){
         if(bedType==true&&breakfastType==true&&roomTypeImg==true&&floor==true&&roomPrice==true
             &&roomPriceName==true&&roomTypeDecs==true&&roomTypeName==true){
-             $.post("ins_room_type_price_info",$(".add_room_type_price_form").serialize(),function (result) {
-                if(result.code==200){
-                    alert(result.msg);
-                     window.location.href="get_room_type_price_page";
-                }else{
-                    alert(result.msg);
-                    window.location.href="add_room_type_price";
+            var formData=new FormData();
+            formData.append("file_img",$('#add_roomTypeImg').prop('files')[0]);
+            formData.append('type',"multipart/form-data");
+            $.ajax({
+                type: 'POST',
+                url: 'ins_room_type_price_info?'+$(".add_room_type_price_form").serialize(),
+                data:formData,
+                contentType: false,// 注意：让jQuery不要处理数据
+                processData: false,// 注意：让jQuery不要设置contentType
+                success: function (result) {
+                    if (result.code == 200) {
+                        alert(result.msg);
+                        window.location.href = "get_room_type_price_page";
+                    } else {
+                        alert(result.msg);
+                        window.location.href = "add_room_type_price";
+                    }
+                }, error: function (mag) {
+                    console.log("上传失败，请重试");
+                    alert("上传失败，请重试");
+                    // window.location.reload();
                 }
-             });
+            });
          }else{
              alert("请添加完整信息");
              return false;

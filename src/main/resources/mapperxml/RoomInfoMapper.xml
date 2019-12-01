@@ -43,7 +43,6 @@
     <result column="room_price_name" property="roomPriceName" jdbcType="VARCHAR" />
     <result column="breakfast_type" property="breakfastType" jdbcType="VARCHAR" />
     <result column="room_price" property="roomPrice" jdbcType="INTEGER" />
-    <result column="room_state" property="roomState" jdbcType="INTEGER" />
   </resultMap>
 
   <sql id="Base_Column_List">
@@ -178,11 +177,9 @@
   <!-- 分页查询客房套餐 -->
   <select id="findRoomTypeAndRoomPriceAll" resultMap="RoomTypeAndRoomPriceDTOMap">
      select t.room_type_num,room_type_name,bed_type,room_type_img,floor,room_type_decs,room_price_name,
-     breakfast_type,room_price,room_state
+     breakfast_type,room_price
      from room_type t
-     LEFT JOIN room_price p on t.room_type_num = p.room_type_num
-      left join room_info r on r.room_type_num=p.room_type_num
-      limit #{pageStart},#{pageSize}
+     LEFT JOIN room_price p on t.room_type_num = p.room_type_num limit #{pageStart},#{pageSize}
   </select>
 
   <!-- 根据room_type_num查询客房类型表-->
@@ -218,7 +215,7 @@
 
   <!-- 根据ID查询客房套餐 -->
   <select id="findRoomTypeAndRoomPriceById" resultMap="RoomTypeAndRoomPriceDTOMap">
-    select t.room_type_num,room_type_name,bed_type,room_type_img,floor,room_type_decs,room_price_name,
+    select t.room_type_num,room_type_name,room_type_img,bed_type,room_type_img,floor,room_type_decs,room_price_name,
     breakfast_type,room_price
     from room_type t
     LEFT JOIN room_price p on t.room_type_num = p.room_type_num

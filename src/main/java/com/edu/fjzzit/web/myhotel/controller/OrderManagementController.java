@@ -7,7 +7,9 @@ import com.edu.fjzzit.web.myhotel.service.OrderManagementService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.apache.shiro.authz.annotation.RequiresUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +22,7 @@ public class OrderManagementController  {
     private OrderManagementService orderManagementService;
 
     @RequestMapping("/get_room_order_page")
+    @RequiresRoles(value={"admin","manager"},logical = Logical.OR)
     public ModelAndView fingOrderInfoAllByPage(@RequestParam(defaultValue="1")Integer pageNumber, @RequestParam(defaultValue="5")Integer pageSize){
         try{
             Page page = orderManagementService.findRoomOrderDetailAll(pageNumber, pageSize);
@@ -70,5 +73,10 @@ public class OrderManagementController  {
             e.printStackTrace();
             return new ResultJson("400", "删除失败!", null);
         }
+    }
+    @RequiresUser
+    @ExceptionHandler(value = {org.apache.shiro.authz.AuthorizationException.class})
+    public String authorizationExceptionHandler(Exception e) {
+        return "view/admin/error";
     }
 }

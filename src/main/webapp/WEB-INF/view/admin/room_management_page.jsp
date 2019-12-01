@@ -53,8 +53,8 @@
                                 <td>${room.breakfastType}</td>
                                 <td>${room.roomPrice}</td>
                                 <td>${room.roomTypeDecs}</td>
-                                <c:if test="${room.roomState==0}"><td>已入住</td></c:if>
-                                <c:if test="${room.roomState==1}"><td>已退房</td></c:if>
+                                <c:if test="${room.roomState==0}"><td>未入住</td></c:if>
+                                <c:if test="${room.roomState==1}"><td>已入住</td></c:if>
                                 <c:if test="${room.roomState==2}"><td>空闲</td></c:if>
                                 <td>
                                     <a href="get_upd_room_info_byid?roomId=${room.roomId}" role="button" class="btn btn-primary room_edit_btn">编辑</a>

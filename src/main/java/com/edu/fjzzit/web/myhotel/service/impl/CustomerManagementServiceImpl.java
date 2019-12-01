@@ -5,6 +5,8 @@ import com.edu.fjzzit.web.myhotel.model.CustomerInfo;
 import com.edu.fjzzit.web.myhotel.model.Page;
 import com.edu.fjzzit.web.myhotel.service.CustomerManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +22,7 @@ public class CustomerManagementServiceImpl implements CustomerManagementService 
      * @return
      */
     @Override
+    @Cacheable(value = "customerManagement")
     public Page findCustomerInfoAll(int pageNumber, int pageSize) {
         Page page=new Page();
         page.setPageSize(pageSize);
@@ -41,6 +44,7 @@ public class CustomerManagementServiceImpl implements CustomerManagementService 
      */
     @Transactional
     @Override
+    @CacheEvict(value = "customerManagement")
     public int delCustomerInfoById(Long customerNum) {
         return customerMapper.deleteByPrimaryKey(customerNum);
     }
@@ -51,6 +55,7 @@ public class CustomerManagementServiceImpl implements CustomerManagementService 
      * @return
      */
     @Override
+    @Cacheable(value = "customerManagement")
     public CustomerInfo findCustomerInfoById(Long customerNum) {
         return customerMapper.selectByPrimaryKey(customerNum);
     }
@@ -62,6 +67,7 @@ public class CustomerManagementServiceImpl implements CustomerManagementService 
      */
     @Transactional
     @Override
+    @CacheEvict(value = "customerManagement")
     public int updCustomerInfoAll(CustomerInfo customerInfo) {
         return customerMapper.updateByPrimaryKeySelective(customerInfo);
     }
@@ -74,6 +80,7 @@ public class CustomerManagementServiceImpl implements CustomerManagementService 
      */
     @Override
     @Transactional
+    @CacheEvict(value = "customerManagement")
     public int insCustomerInfo(CustomerInfo customerInfo) {
         return customerMapper.insertSelective(customerInfo);
     }

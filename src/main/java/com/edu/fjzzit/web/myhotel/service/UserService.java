@@ -28,7 +28,7 @@ public interface UserService {
      * @param password
      * @param roleName
      */
-    void addUser(String userName,String password,String roleName) throws Exception;
+    void addUser(String userName, String password, String roleName) throws Exception;
 
     /**
      * 删除用户
@@ -42,7 +42,7 @@ public interface UserService {
      * @param password
      * @throws Exception
      */
-    void resetSelfPassword(String oldPwd,String password) throws Exception;
+    void resetSelfPassword(String oldPwd, String password) throws Exception;
 
     /**
      * 重置密码(管理员)
@@ -50,7 +50,7 @@ public interface UserService {
      * @param password
      * @throws Exception
      */
-    void resetPassword(String userName,String password) throws Exception;
+    void resetPassword(String userName, String password) throws Exception;
 
     /**
      * 禁用用户(管理员)
@@ -72,7 +72,7 @@ public interface UserService {
      * @param roleName
      * @throws Exception
      */
-    void resetRoles(String userName,String roleName) throws Exception;
+    void resetRoles(String userName, String roleName) throws Exception;
 
     /**
      * 查询个人信息(普通用户)

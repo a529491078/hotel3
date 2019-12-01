@@ -32,6 +32,7 @@
                         <a href="main">酒店介绍<span class="sr-only">(Hotel)</span>  </a>
                     </li>
                     <li><a href="check_in">办理入住</a></li>
+                    <li><a href="check_out">办理退房</a></li>
                     <li><a href="#">房态查看</a></li>
                     <li><a href="#">账单统计</a></li>
                 </ul>

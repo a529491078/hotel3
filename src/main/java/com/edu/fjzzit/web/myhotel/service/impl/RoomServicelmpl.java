@@ -1,5 +1,6 @@
 package com.edu.fjzzit.web.myhotel.service.impl;
 
+import com.edu.fjzzit.web.myhotel.config.ResultJson;
 import com.edu.fjzzit.web.myhotel.dto.FreeRoomDTO;
 import com.edu.fjzzit.web.myhotel.dto.MyOrderDTO;
 import com.edu.fjzzit.web.myhotel.dto.RoomOrderDTO;
@@ -391,5 +392,34 @@ public class RoomServicelmpl implements RoomService {
      */
     private void updateFreeCount(Long roomTypeNum,String checkInDate,String checkOutCheck,Integer count){
         freeRoomCalendarMapper.updateFreeCount(roomTypeNum,checkInDate,checkOutCheck,count);
+    }
+
+    @Override
+    public Long orderConfirm(Long roomTypeNum, String customerName, String customerPhone, String checkInDate,
+                                   String checkOutDate, Integer roomCount, String roomPriceName) {
+        //1.查找房间类型名称->roomType
+        RoomType roomType = roomTypeMapper.selectByPrimaryKey(roomTypeNum);
+        //2.查找房间套餐信息->roomPrice
+        RoomPrice roomPrice = roomPriceMapper.selectByRoomPriceName(roomPriceName);
+        //3.生成订单信息
+        RoomOrderDetailDTO roomOrderDetailDTO = new RoomOrderDetailDTO();
+        roomOrderDetailDTO.setRoomTypeName(roomType.getRoomTypeName());
+        roomOrderDetailDTO.setRoomPriceName(roomPriceName);
+        roomOrderDetailDTO.setBreakfastType(roomPrice.getBreakfastType());
+        roomOrderDetailDTO.setRoomPrice(roomPrice.getRoomPrice());
+        roomOrderDetailDTO.setRoomCount(roomCount);
+        roomOrderDetailDTO.setCheckInDate(checkInDate);
+        roomOrderDetailDTO.setCheckOutDate(checkOutDate);
+
+        List<RoomOrderDetailDTO> roomOrderDetailDTOList = new ArrayList<>();
+        roomOrderDetailDTOList.add(roomOrderDetailDTO);
+
+        RoomOrderDTO roomOrderDTO = new RoomOrderDTO();
+        roomOrderDTO.setCustomerName(customerName);
+        roomOrderDTO.setCustomerPhone(customerPhone);
+        roomOrderDTO.setRoomOrderDetailDTOList(roomOrderDetailDTOList);
+        //4.预定房间
+        Long roomOrderNum = reserveRoom(roomOrderDTO);
+        return roomOrderNum;
     }
 }

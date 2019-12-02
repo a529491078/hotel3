@@ -170,30 +170,7 @@ public class AdminViewController {
     public ResultJson orderConfirm(Long roomTypeNum,String customerName,String customerPhone,String checkInDate,
                                    String checkOutDate,Integer roomCount,String roomPriceName){
         try {
-            //1.查找房间类型名称->roomType
-            RoomType roomType=roomService.findByRoomTypeNum(roomTypeNum);
-            //2.查找房间套餐信息->roomPrice
-            RoomPrice roomPrice=roomService.findByRoomPriceName(roomPriceName);
-            //3.生成订单信息
-            RoomOrderDetailDTO roomOrderDetailDTO=new RoomOrderDetailDTO();
-            roomOrderDetailDTO.setRoomTypeName(roomType.getRoomTypeName());
-            roomOrderDetailDTO.setRoomPriceName(roomPriceName);
-            roomOrderDetailDTO.setBreakfastType(roomPrice.getBreakfastType());
-            roomOrderDetailDTO.setRoomPrice(roomPrice.getRoomPrice());
-            roomOrderDetailDTO.setRoomCount(roomCount);
-            roomOrderDetailDTO.setCheckInDate(checkInDate);
-            roomOrderDetailDTO.setCheckOutDate(checkOutDate);
-
-            List<RoomOrderDetailDTO> roomOrderDetailDTOList=new ArrayList<>();
-            roomOrderDetailDTOList.add(roomOrderDetailDTO);
-
-            RoomOrderDTO roomOrderDTO=new RoomOrderDTO();
-            roomOrderDTO.setCustomerName(customerName);
-            roomOrderDTO.setCustomerPhone(customerPhone);
-            roomOrderDTO.setRoomOrderDetailDTOList(roomOrderDetailDTOList);
-            //4.预定房间
-            Long roomOrderNum=roomService.reserveRoom(roomOrderDTO);
-
+            Long roomOrderNum = roomService.orderConfirm(roomTypeNum, customerName, customerPhone, checkInDate, checkOutDate, roomCount, roomPriceName);
             return new ResultJson("200","预定成功!请重新为客户办理入住！",roomOrderNum);
         }catch(Exception e){
             e.printStackTrace();

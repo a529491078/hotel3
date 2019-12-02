@@ -86,4 +86,7 @@ public interface RoomService {
      * @return
      */
     String findRoomTypeImgByRoomTypeNum(Long roomTypeNum);
+
+    Long orderConfirm (Long roomTypeNum, String customerName, String customerPhone, String checkInDate,
+                       String checkOutDate, Integer roomCount, String roomPriceName);
 }

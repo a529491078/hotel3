@@ -21,8 +21,8 @@
                 <!-- 路径导航 -->
                 <div class="panel-heading">
                     <ol class="breadcrumb">
-                        <li><a href="#">订单管理</a></li>
-                        <li class="active">订单信息</li>
+                        <li><a href="#">客房套餐管理</a></li>
+                        <li class="active">客房套餐信息</li>
                     </ol>
                 </div>
                 <!-- Table -->

@@ -47,8 +47,7 @@
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">账号管理(${admin}) <span class="caret"></span></a>
                         <ul class="dropdown-menu nav nav-pills nav-stacked">
-                            <li class="active"><a href="#" role="button" data-toggle="modal" data-target=".user-updata-modal"><span class="glyphicon glyphicon-pencil" aria-hidden="true" ></span> 修改信息</a></li>
-                            <li><a href="#" role="button" data-toggle="modal" data-target=".user-phone-modal"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> 头像更换</a></li>
+                            <li class="active"><a href="edit_password" role="button"></span> 修改信息</a></li>
                             <li><a href="#" class="hrms_logout"><span class="glyphicon glyphicon-off" aria-hidden="true"></span> 账号退出</a></li>
                         </ul>
                     </li>

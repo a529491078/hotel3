@@ -2,7 +2,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>客房修改</title>
+    <title>管理员修改密码</title>
 </head>
 <body>
 <!-- 导航栏-->
@@ -80,7 +80,7 @@ $(function(){
              $.post("upd_password",$(".upd_pass_form").serialize(),function (result) {
                 if(result.code==200){
                     alert(result.msg);
-                     window.location.href="main";
+                     window.location.href="logout";
                 }else{
                     alert(result.msg);
                     window.location.href="edit_password";
